@@ -1,0 +1,11 @@
+create table smoke_session_detail(
+ID INT AUTO_INCREMENT,
+SMOKE_SESSION INT,
+FAN INT,
+THERMOMETER_1 INT,
+THERMOMETER_2 INT,
+THERMOMETER_3 INT,
+THERMOMETER_4 INT,
+CREATE_TIME TIMESTAMP,
+);
+alter table smoke_session_detail add foreign key (SMOKE_SESSION) references SMOKE_SESSION(ID);
