@@ -180,7 +180,6 @@ public class SmokerSessionManager {
 			probeReadings.add(new ArrayList<>());
 			probeReadings.add(new ArrayList<>());
 			probeReadings.add(new ArrayList<>());
-			
 
 			Long sessionUpdateTime = System.currentTimeMillis();
 			while (run) {
@@ -189,10 +188,13 @@ public class SmokerSessionManager {
 					probeReadings.get(loop).add(smoker.getTemp(loop + 1));
 				}
 
+				smoker.changeSessionLight();
+
 				if (sessionUpdateInterval * 1000 < (System.currentTimeMillis() - sessionUpdateTime)) {
 					SmokeSessionDetail detail = saveDetails(probeReadings);
 
-					if (isDoneCriteriaMet(detail) || detail.getTemperatureTimingDetail().getTemperature().getTemp(Scale.KELVIN) == 0) {
+					if (isDoneCriteriaMet(detail)
+							|| detail.getTemperatureTimingDetail().getTemperature().getTemp(Scale.KELVIN) == 0) {
 						SmokeSessionDetail finalDetail = new SmokeSessionDetail();
 						BeanUtils.copyProperties(detail, finalDetail);
 						finalDetail.setId(null);
@@ -260,7 +262,7 @@ public class SmokerSessionManager {
 					done = false;
 				}
 
-			}else {
+			} else {
 				done = false;
 			}
 			return done;
