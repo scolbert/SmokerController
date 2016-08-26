@@ -19,7 +19,7 @@ public class HardwareController {
 
 	@RequestMapping(value = "Probe/{id}", method = RequestMethod.GET)
 	public Temperature getProbeReading(@PathVariable Integer id) {
-		if (id > 0 && id <5) {
+		if (id > 0 && id < 5) {
 			return new Temperature(smoker.getTemp(id), Scale.KELVIN);
 		} 
 		return null;
@@ -34,5 +34,15 @@ public class HardwareController {
 	public Integer setFan(@PathVariable Integer id) {
 		smoker.setFan(id);
 		return smoker.getFanSetting();
+	}
+	
+	@RequestMapping(value = "Light", method = RequestMethod.GET)
+	public boolean changeLight() {
+		return smoker.changeSessionLight();
+	}
+	
+	@RequestMapping(value = "Light/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
+	public boolean setLight(@PathVariable Integer id) {
+		return smoker.setSessionLight(id > 0);
 	}
 }

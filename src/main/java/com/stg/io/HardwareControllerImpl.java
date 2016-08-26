@@ -68,10 +68,19 @@ public class HardwareControllerImpl implements HardwareInterface {
 			serialPort.open(serialPortPath, baud);
 		}
 		responseReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-		
+
+		initialized = true;
 		try {
 			// Turn the light on to indicate we are ready to take commands
-			sendReceive("6,1");
+			if (StringUtils.isEmpty(sendReceive("6,1"))) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					logger.warn("Sleep interupted during INIT: " + e);
+				}
+				sendReceive("6,1");
+			}
+
 		} catch (IllegalStateException | InterruptedException e) {
 			logger.error("Invalid response from hardware: " + e);
 			try {
@@ -92,7 +101,8 @@ public class HardwareControllerImpl implements HardwareInterface {
 	public void cleanUp() {
 		try {
 			if (serialPort.isOpen()) {
-				// try to shut off the fan and turn off the light if the app closes.
+				// try to shut off the fan and turn off the light if the app
+				// closes.
 				setFan(0);
 				setSessionLight(false);
 				serialPort.close();
@@ -157,7 +167,6 @@ public class HardwareControllerImpl implements HardwareInterface {
 	synchronized String sendReceive(String send) throws IllegalStateException, IOException, InterruptedException {
 		if (!initialized) {
 			this.init();
-			initialized = true;
 		}
 		serialPort.write(send);
 		serialPort.flush();

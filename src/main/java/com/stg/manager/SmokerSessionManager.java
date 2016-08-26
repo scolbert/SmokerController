@@ -121,6 +121,7 @@ public class SmokerSessionManager {
 			logger.error("Thread wont die.  Please restart the app");
 		}
 
+		smoker.setSessionLight(true);
 		currentSession = null;
 		smokeMonitor = null;
 		smokingThread = null;
@@ -185,7 +186,10 @@ public class SmokerSessionManager {
 			while (run) {
 				Long runStartTime = System.currentTimeMillis();
 				for (int loop = 0; loop < 4 && run; loop++) {
-					probeReadings.get(loop).add(smoker.getTemp(loop + 1));
+					Double temp = smoker.getTemp(loop + 1);
+					if (temp > 0) {
+						probeReadings.get(loop).add(temp);
+					}
 				}
 
 				smoker.changeSessionLight();
@@ -201,6 +205,7 @@ public class SmokerSessionManager {
 						finalDetail.setFan(0);
 						detailRepo.saveAndFlush(finalDetail);
 						detail = finalDetail;
+						smoker.setSessionLight(true);
 						run = false;
 					}
 
