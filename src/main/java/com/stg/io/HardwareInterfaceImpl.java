@@ -18,7 +18,7 @@ import com.pi4j.io.serial.SerialFactory;
 
 @Component("smokerHardwareController")
 @Profile("default")
-public class HardwareControllerImpl implements HardwareInterface {
+public class HardwareInterfaceImpl implements HardwareInterface {
 
 	Log logger = LogFactory.getLog(getClass());
 
@@ -154,7 +154,21 @@ public class HardwareControllerImpl implements HardwareInterface {
 		return "KELVIN";
 	}
 
-	/**
+	@Override
+	public boolean setSessionLight(boolean on) {
+		try {
+			String response = sendReceive("6," + (on ? "1" : "0"));
+			light = response.equals("1") ? true : false;
+		} catch (IllegalStateException | IOException | InterruptedException e) {
+			logger.error("Exception setting the light: " + on, e);
+		}
+		return light;
+	}
+
+	@Override
+	public boolean changeSessionLight() {
+		return setSessionLight(!light);
+	}/**
 	 * Send a message to the Arduino over the provided serial port. Waits for a
 	 * response. return an empty string if no response is received in time.
 	 * 
@@ -195,31 +209,20 @@ public class HardwareControllerImpl implements HardwareInterface {
 		return "";
 	}
 
+
 	double getTempFromSmokerOutput(double smokerOutput) {
-		double resistance = RESISTOR / (1023 / smokerOutput - 1);
+		return getTempFromSmokerOutput(smokerOutput, BETA, RESISTOR, THERMOMETER_NOMINAL);
+	}
+	
+	public static double getTempFromSmokerOutput(double smokerOutput, int beta, int resistor, int thermometerResistance) {
+		double resistance = resistor / (1023 / smokerOutput - 1);
 		// https://learn.adafruit.com/thermistor/using-a-thermistor
 		// steinhart equation
-		double kelvin = resistance / THERMOMETER_NOMINAL;
+		double kelvin = resistance / thermometerResistance;
 		kelvin = Math.log(kelvin);
-		kelvin /= BETA;
+		kelvin /= beta;
 		kelvin += 1.0d / (25 + 273.15d);
 		kelvin = 1d / kelvin;
 		return kelvin;
-	}
-
-	@Override
-	public boolean setSessionLight(boolean on) {
-		try {
-			String response = sendReceive("6," + (on ? "1" : "0"));
-			light = response.equals("1") ? true : false;
-		} catch (IllegalStateException | IOException | InterruptedException e) {
-			logger.error("Exception setting the light: " + on, e);
-		}
-		return light;
-	}
-
-	@Override
-	public boolean changeSessionLight() {
-		return setSessionLight(!light);
 	}
 }

@@ -13,7 +13,7 @@ import com.stg.model.Temperature;
 
 @Component("smokerHardwareController")
 @Profile({ "dev", "test" })
-public class DummyHardwareControllerImpl implements HardwareInterface {
+public class DummyHardwareInterfaceImpl implements HardwareInterface {
 
 	Integer fan = 0;
 	boolean light = false;
