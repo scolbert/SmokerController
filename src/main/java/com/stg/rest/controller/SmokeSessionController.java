@@ -77,13 +77,4 @@ public class SmokeSessionController {
 		smokeSessionRepository.delete(existingSession);
 		return existingSession;
 	}
-	
-	
-	/**
-	 * @return List of meats defined that have been previously been cooked
-	 */
-	@RequestMapping(value = "meat", method = RequestMethod.GET)
-	public List<String> getMeats() {
-		return smokeSessionRepository.getMeats();
-	}
 }
