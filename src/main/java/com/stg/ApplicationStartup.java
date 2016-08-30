@@ -8,17 +8,26 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import com.stg.io.HardwareInterface;
+import com.stg.model.Settings;
+import com.stg.repository.SettingsRepository;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
 	@Autowired
 	HardwareInterface smoker;
+	
+	@Autowired
+	SettingsRepository settingsRepo;
 
 	@Override
 	public void onApplicationEvent(final ApplicationReadyEvent event) {
 
 		try {
+//			Settings settings = settingsRepo.getOne(1l);
+//			if (settings != null && settings.getProbe_beta() != null && settings.getProbe_beta() > 0) {
+//				smoker.setProbeCalibration(settings.getProbe_beta());
+//			}
 			smoker.init();
 		} catch (IOException e) {
 			// this is as bad as it gets.  If we can't connect to the controller, can't do anything

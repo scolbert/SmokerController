@@ -1,6 +1,8 @@
 package com.stg.io;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
@@ -18,6 +20,7 @@ public class DummyHardwareInterfaceImpl implements HardwareInterface {
 	Integer fan = 0;
 	boolean light = false;
 	Log logger = LogFactory.getLog(getClass());
+	private int beta;
 
 	@Override
 	public void init() throws IOException {
@@ -62,6 +65,26 @@ public class DummyHardwareInterfaceImpl implements HardwareInterface {
 	public boolean changeSessionLight() {
 		light = !light;
 		return light;
+	}
+
+	@Override
+	public void setProbeCalibration(int beta) {
+		this.beta = beta;
+	}
+
+	@Override
+	public int getProbeCalibration() {
+		return beta;
+	}
+
+	@Override
+	public Map<Integer, Integer> calibrate(Integer temp) {
+		Map<Integer, Integer> calibrationMap = new HashMap<>();
+		calibrationMap.put(1, beta);
+		calibrationMap.put(2, beta);
+		calibrationMap.put(3, beta);
+		calibrationMap.put(4, beta);
+		return calibrationMap;
 	}
 
 }

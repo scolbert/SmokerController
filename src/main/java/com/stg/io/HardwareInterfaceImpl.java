@@ -3,6 +3,11 @@ package com.stg.io;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalDouble;
 
 import javax.annotation.PreDestroy;
 
@@ -23,13 +28,13 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	Log logger = LogFactory.getLog(getClass());
 
 	@Value("${thermometer.nominal.resistance}")
-	private int THERMOMETER_NOMINAL;
+	private long THERMOMETER_NOMINAL;
 
 	@Value("${thermometer.calibration.beta}")
 	private int BETA;
 
 	@Value("${thermometer.resistor.resistance}")
-	private int RESISTOR;
+	private long RESISTOR;
 
 	@Value("${serial.port.path}")
 	private String serialPortPath;
@@ -49,6 +54,9 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	@Value("${max.fan.value}")
 	private Integer maxFanValue;
 
+	@Value("${hardware.calibration.sample.count}")
+	private int calibrationSampleCount;
+	
 	private volatile boolean initialized = false;
 
 	private Integer lastFanValue = 0;
@@ -56,6 +64,7 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	private Serial serialPort;
 	private BufferedReader responseReader;
 	private boolean light = false;
+
 
 	@Override
 	public synchronized void init() throws IOException {
@@ -178,7 +187,7 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	synchronized String sendReceive(String send) throws IllegalStateException, IOException, InterruptedException {
+	 synchronized String sendReceive(String send) throws IllegalStateException, IOException, InterruptedException {
 		if (!initialized) {
 			this.init();
 		}
@@ -211,18 +220,54 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 
 
 	double getTempFromSmokerOutput(double smokerOutput) {
-		return getTempFromSmokerOutput(smokerOutput, BETA, RESISTOR, THERMOMETER_NOMINAL);
+		return HardwareCalulator.getTempFromSmokerOutput(smokerOutput, BETA, RESISTOR, THERMOMETER_NOMINAL);
+	}
+
+
+	@Override
+	public int getProbeCalibration() {
+		return BETA;
+	}
+
+	@Override
+	public void setProbeCalibration(int beta) {
+		BETA = beta;
+	}
+
+	@Override
+	public Map<Integer, Integer> calibrate(Integer targetTemp) throws NumberFormatException, IllegalStateException, IOException, InterruptedException {
+		Map<Integer, Integer> calibrationMap = new HashMap<>();
+		List<List<Double>> probeReadings = new ArrayList<>();
+		probeReadings.add(new ArrayList<>());
+		probeReadings.add(new ArrayList<>());
+		probeReadings.add(new ArrayList<>());
+		probeReadings.add(new ArrayList<>());
+
+		for (int sample = 0; sample < calibrationSampleCount; sample++) {
+			for (int loop = 0; loop < 4; loop++) {
+				Double temp = new Double(this.sendReceive(Integer.toString(loop + 1)));
+				if (temp > 0) {
+					probeReadings.get(loop).add(temp);
+				}
+			}
+		}
+		
+
+		calibrationMap.put(1, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(0)), BETA, RESISTOR, THERMOMETER_NOMINAL));
+		calibrationMap.put(2, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(1)), BETA, RESISTOR, THERMOMETER_NOMINAL));
+		calibrationMap.put(3, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(2)), BETA, RESISTOR, THERMOMETER_NOMINAL));
+		calibrationMap.put(4, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(3)), BETA, RESISTOR, THERMOMETER_NOMINAL));
+		return calibrationMap;
 	}
 	
-	public static double getTempFromSmokerOutput(double smokerOutput, int beta, int resistor, int thermometerResistance) {
-		double resistance = resistor / (1023 / smokerOutput - 1);
-		// https://learn.adafruit.com/thermistor/using-a-thermistor
-		// steinhart equation
-		double kelvin = resistance / thermometerResistance;
-		kelvin = Math.log(kelvin);
-		kelvin /= beta;
-		kelvin += 1.0d / (25 + 273.15d);
-		kelvin = 1d / kelvin;
-		return kelvin;
+	
+	
+	private Double average(List<Double> list) {
+		OptionalDouble avg = list.stream().mapToDouble(a -> a).average();
+		if (avg.isPresent()) {
+			return avg.getAsDouble();
+		} else {
+			return -1d;
+		}
 	}
 }

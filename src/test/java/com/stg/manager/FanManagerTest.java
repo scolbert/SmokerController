@@ -2,8 +2,13 @@ package com.stg.manager;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,18 +16,22 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.stg.AppConfig;
+import com.stg.ApplicationStartup;
 import com.stg.model.Temperature;
 import com.stg.model.Temperature.Scale;
+import com.stg.repository.SettingsRepository;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = AppConfig.class)
 @ActiveProfiles(profiles = "test")
-@TestPropertySource(locations="classpath:test.properties")
+//@TestPropertySource(locations="classpath:test.properties")
+@Ignore
 public class FanManagerTest {
 
 	@Autowired
 	private FanManager fanMgr;
+	
 
 	@Test
 	public void testMaxValue() {

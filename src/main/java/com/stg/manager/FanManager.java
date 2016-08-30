@@ -34,7 +34,7 @@ public class FanManager {
 		// for the initial startup case, we are going to get hot fast, so we need to reduce the fan setting quickly
 		if (initialStartup && currentTemp.getTemp(Scale.KELVIN) > targetTemp.getTemp(Scale.KELVIN)) {
 			initialStartup = false;
-			newFanSetting /= 2;
+			newFanSetting = 0;
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("FanValueCalulator: " + currentTemp + " : " + targetTemp + " : " + currentFanValue + " : " + newFanSetting);

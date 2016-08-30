@@ -10,6 +10,7 @@ public class Settings {
 	private Long id;
 	private String scale;
 	private Integer ambientThermometer;
+	private Integer probe_beta;
 
 	public Long getId() {
 		return id;
@@ -34,4 +35,13 @@ public class Settings {
 	public void setAmbientThermometer(Integer ambientThermometer) {
 		this.ambientThermometer = ambientThermometer;
 	}
+
+	public Integer getProbe_calibration() {
+		return probe_beta;
+	}
+
+	public void setProbe_calibration(Integer beta) {
+		this.probe_beta = beta;
+	}
+
 }

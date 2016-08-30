@@ -1,9 +1,10 @@
 package com.stg.io;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface HardwareInterface {
-
+	
 	Double getTemp(Integer input);
 
 	void setFan(Integer value);
@@ -17,5 +18,11 @@ public interface HardwareInterface {
 	boolean changeSessionLight();
 
 	void init() throws IOException;
+
+	void setProbeCalibration(int beta);
+
+	int getProbeCalibration();
+
+	Map<Integer, Integer> calibrate(Integer temp) throws NumberFormatException, IllegalStateException, IOException, InterruptedException;
 
 }
