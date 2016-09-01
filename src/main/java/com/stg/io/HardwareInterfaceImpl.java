@@ -195,7 +195,7 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 		serialPort.flush();
 		for (int loop = 0; loop < timesToRetry && !responseReader.ready(); loop++) {
 			Thread.sleep(sleep);
-			if (logger.isDebugEnabled()) {
+			if (logger.isTraceEnabled()) {
 				logger.trace("No response yet from Arduino.  Sleeping for the " + (loop + 1) + " time");
 			}
 		}

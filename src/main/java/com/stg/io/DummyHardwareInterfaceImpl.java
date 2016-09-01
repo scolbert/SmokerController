@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.stg.model.Temperature;
 
-@Component("smokerHardwareController")
+@Component
 @Profile({ "dev", "test" })
 public class DummyHardwareInterfaceImpl implements HardwareInterface {
 

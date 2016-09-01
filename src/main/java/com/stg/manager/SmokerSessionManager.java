@@ -245,13 +245,13 @@ public class SmokerSessionManager {
 							probeTemp = detail.getThermometer1();
 							break;
 						case 2:
-							probeTemp = detail.getThermometer1();
+							probeTemp = detail.getThermometer2();
 							break;
 						case 3:
-							probeTemp = detail.getThermometer1();
+							probeTemp = detail.getThermometer3();
 							break;
 						case 4:
-							probeTemp = detail.getThermometer1();
+							probeTemp = detail.getThermometer4();
 							break;
 						default:
 							logger.error("Invalid probe: " + probe);
