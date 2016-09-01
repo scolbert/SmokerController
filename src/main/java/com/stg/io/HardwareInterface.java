@@ -5,6 +5,8 @@ import java.util.Map;
 
 public interface HardwareInterface {
 	
+	Map<Integer, Double> getTemps();
+	
 	Double getTemp(Integer input);
 
 	void setFan(Integer value);

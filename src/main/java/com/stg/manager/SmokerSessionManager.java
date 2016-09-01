@@ -3,7 +3,9 @@ package com.stg.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalDouble;
 
 import org.apache.commons.logging.Log;
@@ -176,23 +178,16 @@ public class SmokerSessionManager {
 		@Override
 		public void run() {
 
-			List<List<Double>> probeReadings = new ArrayList<>();
-			probeReadings.add(new ArrayList<>());
-			probeReadings.add(new ArrayList<>());
-			probeReadings.add(new ArrayList<>());
-			probeReadings.add(new ArrayList<>());
+			Map<Integer, List<Double>> probeReadings = new HashMap<>();
+			probeReadings.put(1, new ArrayList<>());
+			probeReadings.put(2, new ArrayList<>());
+			probeReadings.put(3, new ArrayList<>());
+			probeReadings.put(4, new ArrayList<>());
 
 			Long sessionUpdateTime = System.currentTimeMillis();
 			while (run) {
 				Long runStartTime = System.currentTimeMillis();
-				for (int loop = 0; loop < 4 && run; loop++) {
-					Double temp = smoker.getTemp(loop + 1);
-					if (temp > 0) {
-						probeReadings.get(loop).add(temp);
-					}
-				}
-
-				smoker.changeSessionLight();
+				smoker.getTemps().forEach( (k,v) -> probeReadings.get(k).add(v));
 
 				if (sessionUpdateInterval * 1000 < (System.currentTimeMillis() - sessionUpdateTime)) {
 					SmokeSessionDetail detail = saveDetails(probeReadings);
@@ -211,9 +206,7 @@ public class SmokerSessionManager {
 
 					smoker.setFan(detail.getFan());
 					// empty the lists for the next run
-					for (List<Double> readings : probeReadings) {
-						readings.clear();
-					}
+					probeReadings.forEach( (k,v) -> v.clear());
 					sessionUpdateTime = System.currentTimeMillis();
 				}
 
@@ -273,7 +266,7 @@ public class SmokerSessionManager {
 			return done;
 		}
 
-		private SmokeSessionDetail saveDetails(List<List<Double>> probeReadings) {
+		private SmokeSessionDetail saveDetails(Map<Integer, List<Double>> probeReadings) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("saving session details");
 			}
@@ -281,13 +274,13 @@ public class SmokerSessionManager {
 			detail.setTime(new Date());
 			detail.setSession(currentSession);
 			detail.setThermometer1(
-					new Temperature(average(probeReadings.get(0)), Scale.valueOf(smoker.getTemperatureScale())));
-			detail.setThermometer2(
 					new Temperature(average(probeReadings.get(1)), Scale.valueOf(smoker.getTemperatureScale())));
-			detail.setThermometer3(
+			detail.setThermometer2(
 					new Temperature(average(probeReadings.get(2)), Scale.valueOf(smoker.getTemperatureScale())));
-			detail.setThermometer4(
+			detail.setThermometer3(
 					new Temperature(average(probeReadings.get(3)), Scale.valueOf(smoker.getTemperatureScale())));
+			detail.setThermometer4(
+					new Temperature(average(probeReadings.get(4)), Scale.valueOf(smoker.getTemperatureScale())));
 
 			// get the current cooking step info
 			TemperatureTimingDetail currentTargetTemp = getTargetTemp();

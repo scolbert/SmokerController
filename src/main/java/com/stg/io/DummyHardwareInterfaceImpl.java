@@ -87,4 +87,14 @@ public class DummyHardwareInterfaceImpl implements HardwareInterface {
 		return calibrationMap;
 	}
 
+	@Override
+	public Map<Integer, Double> getTemps() {
+		Map<Integer, Double> results = new HashMap<>();
+		results.put(1, 300d + ((double) 1 / 10) + fan + ((int) (Math.random() * 40 - 20)));
+		results.put(2, 300d + ((double) 2 / 10) + fan + ((int) (Math.random() * 40 - 20)));
+		results.put(3, 300d + ((double) 3 / 10) + fan + ((int) (Math.random() * 40 - 20)));
+		results.put(4, 300d + ((double) 4 / 10) + fan + ((int) (Math.random() * 40 - 20)));
+		return null;
+	}
+
 }

@@ -21,9 +21,9 @@ import org.springframework.util.StringUtils;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialFactory;
 
-@Component("smokerHardwareController")
+@Component
 @Profile("default")
-public class HardwareInterfaceImpl implements HardwareInterface {
+public class HardwareInterface2Impl implements HardwareInterface {
 
 	Log logger = LogFactory.getLog(getClass());
 
@@ -56,7 +56,7 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 
 	@Value("${hardware.calibration.sample.count}")
 	private int calibrationSampleCount;
-	
+
 	private volatile boolean initialized = false;
 
 	private Integer lastFanValue = 0;
@@ -64,7 +64,6 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	private Serial serialPort;
 	private BufferedReader responseReader;
 	private boolean light = false;
-
 
 	@Override
 	public synchronized void init() throws IOException {
@@ -81,16 +80,16 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 		initialized = true;
 		try {
 			// Turn the light on to indicate we are ready to take commands
-			if (StringUtils.isEmpty(sendReceive("6,1"))) {
+			if (setSessionLight(true)) {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					logger.warn("Sleep interupted during INIT: " + e);
 				}
-				sendReceive("6,1");
+				setSessionLight(true);
 			}
 
-		} catch (IllegalStateException | InterruptedException e) {
+		} catch (IllegalStateException e) {
 			logger.error("Invalid response from hardware: " + e);
 			try {
 				Thread.sleep(500);
@@ -98,8 +97,8 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 				logger.warn("Sleep interupted during INIT: " + e);
 			}
 			try {
-				sendReceive("6,1");
-			} catch (IllegalStateException | InterruptedException e1) {
+				setSessionLight(true);
+			} catch (IllegalStateException e1) {
 				logger.fatal(
 						"Invalid response from hardware for the second time.  Giving up.  Consider rebooting: " + e);
 			}
@@ -120,12 +119,12 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 			logger.error("Exception closing the serial port", e);
 		}
 	}
-
-	@Override
+	
+	@Override 
 	public Double getTemp(Integer input) {
 		String response;
 		try {
-			response = sendReceive(input.toString());
+			response = sendReceive(input.toString()).get(input.toString());
 		} catch (IllegalStateException | IOException | InterruptedException e) {
 			logger.error("Exception retreiving probe data: " + input, e);
 			return -1d;
@@ -138,15 +137,19 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 
 	@Override
 	public Map<Integer, Double> getTemps() {
-		light = changeSessionLight();
-		Map<Integer, Double> temps = new HashMap<>();
-		for (int loop = 1; loop < 5; loop++) {
-			temps.put(loop, getTemp(loop));
+		Map<String, String> temps = new HashMap<>();
+		Map<Integer, Double> response = new HashMap<>();
+		try {
+			// turn the light off, then back on after we finish reading the probes.
+			temps = sendReceive("6=0,1,2,3,4,6=1");
+			temps.forEach((k,v) -> response.put(new Integer(k), getTempFromSmokerOutput(new Double(v))));
+		} catch (IllegalStateException | IOException | InterruptedException e) {
+			logger.error("Exception retreiving probe data: ", e);
+			return response;
 		}
-		light = changeSessionLight();
-		return temps;
+		return response;
 	}
-	
+
 	@Override
 	public void setFan(Integer value) {
 		if (value > maxFanValue) {
@@ -157,7 +160,7 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 		}
 
 		try {
-			sendReceive("5," + value.toString());
+			sendReceive("5=" + value.toString());
 		} catch (IllegalStateException | IOException | InterruptedException e) {
 			logger.error("Exception thrown: " + value, e);
 		}
@@ -177,10 +180,11 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	@Override
 	public boolean setSessionLight(boolean on) {
 		try {
-			String response = sendReceive("6," + (on ? "1" : "0"));
-			light = response.equals("1") ? true : false;
+			Map<String, String> response = sendReceive("6=" + (on ? "1" : "0"));
+			light = response.get("6") != null && response.get("6").equals("1") ? true : false;
 		} catch (IllegalStateException | IOException | InterruptedException e) {
 			logger.error("Exception setting the light: " + on, e);
+			light = false;
 		}
 		return light;
 	}
@@ -188,7 +192,9 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	@Override
 	public boolean changeSessionLight() {
 		return setSessionLight(!light);
-	}/**
+	}
+
+	/**
 	 * Send a message to the Arduino over the provided serial port. Waits for a
 	 * response. return an empty string if no response is received in time.
 	 * 
@@ -198,9 +204,16 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	 synchronized String sendReceive(String send) throws IllegalStateException, IOException, InterruptedException {
+	synchronized Map<String, String> sendReceive(String send)
+			throws IllegalStateException, IOException, InterruptedException {
+		Map<String, String> results = new HashMap<>();
+
 		if (!initialized) {
 			this.init();
+		}
+
+		if (send.charAt(send.length() - 1) != ';') {
+			send += ";"; // make sure we have a trailing ;
 		}
 		serialPort.write(send);
 		serialPort.flush();
@@ -216,24 +229,29 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 				logger.info("Communication with Arduino: " + send + " : " + response);
 			}
 			if (StringUtils.hasText(response)) {
-				String[] tokens = response.split("=");
-				if (tokens.length != 2) {
-					// Houston, we have a problem
-					logger.error("Invalid response from hardware: " + response);
-					return "";
+				if (response.charAt(response.length() - 1) != ';') {
+					logger.error("Invalid response from hardware, missing ; : " + response);
+					return new HashMap<>();
 				}
-				return tokens[1];
+				String[] cmdResults = response.split(",");
+				for (String cmdResult : cmdResults) {
+					String[] tokens = response.split("=");
+					if (tokens.length == 2) {
+						results.put(tokens[0], tokens[1]);
+					} else {
+						logger.error("Invalid command response from hardware: " + cmdResult);
+					}
+				}
 			}
+		} else {
+			logger.warn("Failed to return message from Arduino");
 		}
-		logger.warn("Failed to return message from Arduino");
-		return "";
+		return results;
 	}
-
 
 	double getTempFromSmokerOutput(double smokerOutput) {
 		return HardwareCalulator.getTempFromSmokerOutput(smokerOutput, BETA, RESISTOR, THERMOMETER_NOMINAL);
 	}
-
 
 	@Override
 	public int getProbeCalibration() {
@@ -246,7 +264,8 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 	}
 
 	@Override
-	public Map<Integer, Integer> calibrate(Integer targetTemp) throws NumberFormatException, IllegalStateException, IOException, InterruptedException {
+	public Map<Integer, Integer> calibrate(Integer targetTemp)
+			throws NumberFormatException, IllegalStateException, IOException, InterruptedException {
 		Map<Integer, Integer> calibrationMap = new HashMap<>();
 		List<List<Double>> probeReadings = new ArrayList<>();
 		probeReadings.add(new ArrayList<>());
@@ -255,24 +274,21 @@ public class HardwareInterfaceImpl implements HardwareInterface {
 		probeReadings.add(new ArrayList<>());
 
 		for (int sample = 0; sample < calibrationSampleCount; sample++) {
-			for (int loop = 0; loop < 4; loop++) {
-				Double temp = new Double(this.sendReceive(Integer.toString(loop + 1)));
-				if (temp > 0) {
-					probeReadings.get(loop).add(temp);
-				}
-			}
+			Map<Integer, Double> temps = getTemps();
+			temps.forEach((k,v) -> probeReadings.get(k - 1).add(v));
 		}
-		
 
-		calibrationMap.put(1, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(0)), BETA, RESISTOR, THERMOMETER_NOMINAL));
-		calibrationMap.put(2, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(1)), BETA, RESISTOR, THERMOMETER_NOMINAL));
-		calibrationMap.put(3, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(2)), BETA, RESISTOR, THERMOMETER_NOMINAL));
-		calibrationMap.put(4, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(3)), BETA, RESISTOR, THERMOMETER_NOMINAL));
+		calibrationMap.put(1, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(0)), BETA, RESISTOR,
+				THERMOMETER_NOMINAL));
+		calibrationMap.put(2, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(1)), BETA, RESISTOR,
+				THERMOMETER_NOMINAL));
+		calibrationMap.put(3, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(2)), BETA, RESISTOR,
+				THERMOMETER_NOMINAL));
+		calibrationMap.put(4, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(3)), BETA, RESISTOR,
+				THERMOMETER_NOMINAL));
 		return calibrationMap;
 	}
-	
-	
-	
+
 	private Double average(List<Double> list) {
 		OptionalDouble avg = list.stream().mapToDouble(a -> a).average();
 		if (avg.isPresent()) {
