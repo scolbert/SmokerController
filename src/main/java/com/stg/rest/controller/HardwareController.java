@@ -1,6 +1,7 @@
 package com.stg.rest.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,13 @@ public class HardwareController {
 			return new Temperature(smoker.getTemp(id), Scale.KELVIN);
 		}
 		return null;
+	}
+	
+	@RequestMapping(value = "Probe", method = RequestMethod.GET)
+	public Map<Integer, Temperature> getAllProbeReading() {
+		Map<Integer, Temperature> results = new HashMap<>();
+		smoker.getTemps().forEach((k,v) -> results.put(k, new Temperature(v, Scale.KELVIN)));
+		return results;
 	}
 
 	@RequestMapping(value = "Fan", method = RequestMethod.GET)

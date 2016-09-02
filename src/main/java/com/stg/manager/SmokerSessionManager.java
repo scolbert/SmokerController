@@ -187,6 +187,7 @@ public class SmokerSessionManager {
 			Long sessionUpdateTime = System.currentTimeMillis();
 			while (run) {
 				Long runStartTime = System.currentTimeMillis();
+				smoker.changeSessionLight();
 				smoker.getTemps().forEach( (k,v) -> probeReadings.get(k).add(v));
 
 				if (sessionUpdateInterval * 1000 < (System.currentTimeMillis() - sessionUpdateTime)) {
@@ -288,7 +289,7 @@ public class SmokerSessionManager {
 
 			// calculate new fan setting
 			Integer newFanSetting = fan.calculateFanValue(
-					new Temperature(average(probeReadings.get(currentSession.getReferenceThermometer() - 1)),
+					new Temperature(average(probeReadings.get(currentSession.getReferenceThermometer())),
 							Scale.valueOf(smoker.getTemperatureScale())),
 					currentTargetTemp.getTemperature(), smoker.getFanSetting());
 			detail.setFan(newFanSetting.intValue());

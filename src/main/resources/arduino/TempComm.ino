@@ -1,6 +1,6 @@
+// debug mode should only be used with the Arduino Serial Monitor.  It will cause problems with the java program
 int debug = 0;
 
-#define TEMP_READ_DELAY 10000 // 10 seconds between temp reading
 #define BAUD_RATE 9600 // Baudrate for serial monitor and ESP
 
 // Temperature Probes 
@@ -53,7 +53,7 @@ String processCommands(String cmds) {
 	String cmd;
 
 	while (lastIndex >= 0) {
-		lastIndex = cmds.indexOf(',', lastIndex);
+		lastIndex = cmds.indexOf(',');
 		if (lastIndex == -1) {
 			cmd = cmds;
 		} else {
@@ -68,7 +68,7 @@ String processCommands(String cmds) {
 			}
 		} else if (lastIndex == -1) {
 			// last command failed.  need to remove the trailing ","
-			response = response.substring(0, response.length - 1);
+			response = response.substring(0, response.length() - 1);
 		}
 	}
 	response += ";";
@@ -77,21 +77,24 @@ String processCommands(String cmds) {
 
 String runCommand(String cmd) {
 	String response = "";
+	if (debug == 1) {
+		Serial.println("Processing Command: " + cmd);
+	}
 	switch (cmd.charAt(0)) {
 	case PROBE_1_CMD:
-		response += "1="
+		response += "1=";
 		response += sampleTempData(PROBE_1_PIN, NUMSAMPLES);
 		break;
 	case PROBE_2_CMD:
-		response += "2="
+		response += "2=";
 		response += sampleTempData(PROBE_2_PIN, NUMSAMPLES);
 		break;
 	case PROBE_3_CMD:
-		response += "3="
+		response += "3=";
 		response += sampleTempData(PROBE_3_PIN, NUMSAMPLES);
 		break;
 	case PROBE_4_CMD:
-		response += "4="
+		response += "4=";
 		response += sampleTempData(PROBE_4_PIN, NUMSAMPLES);
 		break;
 	case FAN_CMD:
@@ -101,6 +104,9 @@ String runCommand(String cmd) {
 		response += lightManager(cmd);
 		break;
 	default:
+		if (debug == 1) {
+			Serial.println("Unknown Command: " + cmd);
+		}
 		break;
 	}
 	return response;
@@ -128,6 +134,7 @@ String fanManager(String cmd) {
 		response += "5=";
 		response += inputValue;
 	}
+	return response;
 }
 
 String lightManager(String cmd) {
@@ -142,32 +149,38 @@ String lightManager(String cmd) {
 		response += "6=";
 		response += inputValue;
 	}
+	return response;
 }
 
 /**
  * Samples the analog input numSamples number of times to smooth out the final value
  */
-float sampleTempData(int pin, int numSamples) {
+int sampleTempData(int pin, int numSamples) {
 	uint8_t i;
-	float average;
-	float samples[numSamples];
+	int sum = 0;
+	int average = 0;
+	int samples[numSamples];
 
-	average = 0;
-// take N samples in a row, with a slight delay
+	// take N samples in a row, with a slight delay
 	for (i = 0; i < numSamples; i++) {
 		samples[i] = analogRead(pin);
-		average += samples[i];
+		sum += samples[i];
 		if (debug == 1) {
 			Serial.print("analog Read ");
 			Serial.print(i);
 			Serial.print(": ");
 			Serial.println(samples[i]);
 		}
-		//   delay(100);
+		delay(10);
 	}
 
-// average all the samples out
-	average /= numSamples;
+	// average all the samples out
+	average = sum/numSamples;
+	
+	// joys of integer math.  If our remainder is more than half the average, add one (poor mans rounding)
+	if ( (sum % numSamples) >= numSamples / 2 ) {
+		average =+ 1;
+	}
 
 	if (debug == 1) {
 		Serial.print("Average analog reading pin ");

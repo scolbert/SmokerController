@@ -14,6 +14,7 @@ import javax.annotation.PreDestroy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -22,6 +23,7 @@ import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialFactory;
 
 @Component
+@Primary
 @Profile("default")
 public class HardwareInterface2Impl implements HardwareInterface {
 
@@ -119,8 +121,8 @@ public class HardwareInterface2Impl implements HardwareInterface {
 			logger.error("Exception closing the serial port", e);
 		}
 	}
-	
-	@Override 
+
+	@Override
 	public Double getTemp(Integer input) {
 		String response;
 		try {
@@ -140,9 +142,13 @@ public class HardwareInterface2Impl implements HardwareInterface {
 		Map<String, String> temps = new HashMap<>();
 		Map<Integer, Double> response = new HashMap<>();
 		try {
-			// turn the light off, then back on after we finish reading the probes.
-			temps = sendReceive("6=0,1,2,3,4,6=1");
-			temps.forEach((k,v) -> response.put(new Integer(k), getTempFromSmokerOutput(new Double(v))));
+			temps = sendReceive("1,2,3,4");
+
+			temps.forEach((k, v) -> {
+				if (k.equals("1") || k.equals("2") || k.equals("3") || k.equals("4")) {
+					response.put(new Integer(k), getTempFromSmokerOutput(new Double(v)));
+				}
+			});
 		} catch (IllegalStateException | IOException | InterruptedException e) {
 			logger.error("Exception retreiving probe data: ", e);
 			return response;
@@ -233,18 +239,20 @@ public class HardwareInterface2Impl implements HardwareInterface {
 					logger.error("Invalid response from hardware, missing ; : " + response);
 					return new HashMap<>();
 				}
+				// get rid of the trailing ";"
+				response = response.substring(0, response.length() - 1);
 				String[] cmdResults = response.split(",");
 				for (String cmdResult : cmdResults) {
-					String[] tokens = response.split("=");
-					if (tokens.length == 2) {
-						results.put(tokens[0], tokens[1]);
+					String[] cmdParts = cmdResult.split("=");
+					if (cmdParts.length == 2) {
+						results.put(cmdParts[0], cmdParts[1]);
 					} else {
 						logger.error("Invalid command response from hardware: " + cmdResult);
 					}
 				}
 			}
 		} else {
-			logger.warn("Failed to return message from Arduino");
+			logger.warn("Failed to return message from Arduino: " + send);
 		}
 		return results;
 	}
@@ -275,7 +283,7 @@ public class HardwareInterface2Impl implements HardwareInterface {
 
 		for (int sample = 0; sample < calibrationSampleCount; sample++) {
 			Map<Integer, Double> temps = getTemps();
-			temps.forEach((k,v) -> probeReadings.get(k - 1).add(v));
+			temps.forEach((k, v) -> probeReadings.get(k - 1).add(v));
 		}
 
 		calibrationMap.put(1, HardwareCalulator.calculateBeta(targetTemp, average(probeReadings.get(0)), BETA, RESISTOR,
