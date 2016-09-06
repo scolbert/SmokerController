@@ -16,10 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.stg.AppConfig;
-import com.stg.ApplicationStartup;
 import com.stg.model.Temperature;
 import com.stg.model.Temperature.Scale;
-import com.stg.repository.SettingsRepository;
 
 
 //@RunWith(SpringJUnit4ClassRunner.class)

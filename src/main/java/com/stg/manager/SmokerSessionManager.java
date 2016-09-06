@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.stg.io.HardwareInterface;
+import com.stg.io.Hardware;
 import com.stg.model.SmokeSession;
 import com.stg.model.SmokeSessionDetail;
 import com.stg.model.Temperature;
@@ -33,7 +33,7 @@ public class SmokerSessionManager {
 	Log logger = LogFactory.getLog(getClass());
 
 	@Autowired
-	private HardwareInterface smoker;
+	private Hardware smoker;
 
 	@Autowired
 	private FanManager fan;

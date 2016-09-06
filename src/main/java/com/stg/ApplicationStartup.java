@@ -7,18 +7,18 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import com.stg.io.HardwareInterface;
-import com.stg.model.Settings;
-import com.stg.repository.SettingsRepository;
+import com.stg.io.Hardware;
+//import com.stg.model.Settings;
+//import com.stg.repository.SettingsRepository;
 
 @Component
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
 	@Autowired
-	HardwareInterface smoker;
+	Hardware smoker;
 	
-	@Autowired
-	SettingsRepository settingsRepo;
+//	@Autowired
+//	SettingsRepository settingsRepo;
 
 	@Override
 	public void onApplicationEvent(final ApplicationReadyEvent event) {

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class HardwareInterfaceImplTest {
+public class HardwareImplTest {
 
 	@Test
 	public void testCalibrate() {

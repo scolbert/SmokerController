@@ -1,8 +1,6 @@
 package com.stg.io;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,19 +11,15 @@ import javax.annotation.PreDestroy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.pi4j.io.serial.Serial;
-import com.pi4j.io.serial.SerialFactory;
-
 @Component
-@Primary
 @Profile("default")
-public class HardwareInterface2Impl implements HardwareInterface {
+public class HardwareImpl implements Hardware {
 
 	Log logger = LogFactory.getLog(getClass());
 
@@ -38,18 +32,6 @@ public class HardwareInterface2Impl implements HardwareInterface {
 	@Value("${thermometer.resistor.resistance}")
 	private long RESISTOR;
 
-	@Value("${serial.port.path}")
-	private String serialPortPath;
-
-	@Value("${serial.port.baud.rate}")
-	private int baud;
-
-	@Value("${arduino.read.sleep.time}")
-	private int sleep;
-
-	@Value("${arduino.read.sleep.count}")
-	private int timesToRetry;
-
 	@Value("${min.fan.value}")
 	private Integer minFanValue;
 
@@ -59,27 +41,16 @@ public class HardwareInterface2Impl implements HardwareInterface {
 	@Value("${hardware.calibration.sample.count}")
 	private int calibrationSampleCount;
 
-	private volatile boolean initialized = false;
-
 	private Integer lastFanValue = 0;
 
-	private Serial serialPort;
-	private BufferedReader responseReader;
+	@Autowired
+	HardwareCommunicator hwIO;
+
 	private boolean light = false;
 
 	@Override
 	public synchronized void init() throws IOException {
-		if (initialized) {
-			return;
-		}
-		serialPort = SerialFactory.createInstance();
-		logger.info("connecting to port at: " + serialPortPath + " at " + baud + " baud.");
-		if (!serialPort.isOpen()) {
-			serialPort.open(serialPortPath, baud);
-		}
-		responseReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
 
-		initialized = true;
 		try {
 			// Turn the light on to indicate we are ready to take commands
 			if (setSessionLight(true)) {
@@ -109,24 +80,21 @@ public class HardwareInterface2Impl implements HardwareInterface {
 
 	@PreDestroy
 	public void cleanUp() {
-		try {
-			if (serialPort.isOpen()) {
-				// try to shut off the fan and turn off the light if the app
-				// closes.
-				setFan(0);
-				setSessionLight(false);
-				serialPort.close();
-			}
-		} catch (IllegalStateException | IOException e) {
-			logger.error("Exception closing the serial port", e);
+		if (hwIO.isAvailable()) {
+			// try to shut off the fan and turn off the light if the app closes.
+			setFan(0);
+			setSessionLight(false);
+			hwIO.shutdown();
 		}
 	}
 
 	@Override
 	public Double getTemp(Integer input) {
 		String response;
+		Map<String, String> cmd = new HashMap<>();
+		cmd.put(input.toString(), null);
 		try {
-			response = sendReceive(input.toString()).get(input.toString());
+			response = hwIO.sendReceive(cmd).get(input.toString());
 		} catch (IllegalStateException | IOException | InterruptedException e) {
 			logger.error("Exception retreiving probe data: " + input, e);
 			return -1d;
@@ -141,8 +109,14 @@ public class HardwareInterface2Impl implements HardwareInterface {
 	public Map<Integer, Double> getTemps() {
 		Map<String, String> temps = new HashMap<>();
 		Map<Integer, Double> response = new HashMap<>();
+		Map<String, String> cmd = new HashMap<>();
+		cmd.put("1", null);
+		cmd.put("2", null);
+		cmd.put("3", null);
+		cmd.put("4", null);
+		
 		try {
-			temps = sendReceive("1,2,3,4");
+			temps = hwIO.sendReceive(cmd);
 
 			temps.forEach((k, v) -> {
 				if (k.equals("1") || k.equals("2") || k.equals("3") || k.equals("4")) {
@@ -158,6 +132,8 @@ public class HardwareInterface2Impl implements HardwareInterface {
 
 	@Override
 	public void setFan(Integer value) {
+		Map<String, String> cmd = new HashMap<>();
+		
 		if (value > maxFanValue) {
 			value = maxFanValue;
 		}
@@ -165,8 +141,10 @@ public class HardwareInterface2Impl implements HardwareInterface {
 			value = minFanValue;
 		}
 
+		cmd.put("5", value.toString());
+		
 		try {
-			sendReceive("5=" + value.toString());
+			hwIO.sendReceive(cmd);
 		} catch (IllegalStateException | IOException | InterruptedException e) {
 			logger.error("Exception thrown: " + value, e);
 		}
@@ -185,8 +163,10 @@ public class HardwareInterface2Impl implements HardwareInterface {
 
 	@Override
 	public boolean setSessionLight(boolean on) {
+		Map<String, String> cmd = new HashMap<>();
+		cmd.put("6", on ? "1" : "0");
 		try {
-			Map<String, String> response = sendReceive("6=" + (on ? "1" : "0"));
+			Map<String, String> response = hwIO.sendReceive(cmd);
 			light = response.get("6") != null && response.get("6").equals("1") ? true : false;
 		} catch (IllegalStateException | IOException | InterruptedException e) {
 			logger.error("Exception setting the light: " + on, e);
@@ -198,63 +178,6 @@ public class HardwareInterface2Impl implements HardwareInterface {
 	@Override
 	public boolean changeSessionLight() {
 		return setSessionLight(!light);
-	}
-
-	/**
-	 * Send a message to the Arduino over the provided serial port. Waits for a
-	 * response. return an empty string if no response is received in time.
-	 * 
-	 * @param send
-	 * @return response from the Arduino
-	 * @throws IllegalStateException
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	synchronized Map<String, String> sendReceive(String send)
-			throws IllegalStateException, IOException, InterruptedException {
-		Map<String, String> results = new HashMap<>();
-
-		if (!initialized) {
-			this.init();
-		}
-
-		if (send.charAt(send.length() - 1) != ';') {
-			send += ";"; // make sure we have a trailing ;
-		}
-		serialPort.write(send);
-		serialPort.flush();
-		for (int loop = 0; loop < timesToRetry && !responseReader.ready(); loop++) {
-			Thread.sleep(sleep);
-			if (logger.isTraceEnabled()) {
-				logger.trace("No response yet from Arduino.  Sleeping for the " + (loop + 1) + " time");
-			}
-		}
-		if (responseReader.ready()) {
-			String response = responseReader.readLine();
-			if (logger.isInfoEnabled()) {
-				logger.info("Communication with Arduino: " + send + " : " + response);
-			}
-			if (StringUtils.hasText(response)) {
-				if (response.charAt(response.length() - 1) != ';') {
-					logger.error("Invalid response from hardware, missing ; : " + response);
-					return new HashMap<>();
-				}
-				// get rid of the trailing ";"
-				response = response.substring(0, response.length() - 1);
-				String[] cmdResults = response.split(",");
-				for (String cmdResult : cmdResults) {
-					String[] cmdParts = cmdResult.split("=");
-					if (cmdParts.length == 2) {
-						results.put(cmdParts[0], cmdParts[1]);
-					} else {
-						logger.error("Invalid command response from hardware: " + cmdResult);
-					}
-				}
-			}
-		} else {
-			logger.warn("Failed to return message from Arduino: " + send);
-		}
-		return results;
 	}
 
 	double getTempFromSmokerOutput(double smokerOutput) {

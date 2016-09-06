@@ -3,7 +3,13 @@ package com.stg.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * This class is not used in the code.  All settings are currently managed by the application.properties files.
+ * It is marked @deprecated until it is implemented fully.
+ *
+ */
 @Entity
+@Deprecated
 public class Settings {
 	
 	@Id

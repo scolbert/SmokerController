@@ -15,7 +15,7 @@ import com.stg.model.Temperature;
 
 @Component
 @Profile({ "dev", "test" })
-public class DummyHardwareInterfaceImpl implements HardwareInterface {
+public class DummyHardwareInterfaceImpl implements Hardware {
 
 	Integer fan = 0;
 	boolean light = false;
