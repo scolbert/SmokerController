@@ -179,7 +179,7 @@ int sampleTempData(int pin, int numSamples) {
 	
 	// joys of integer math.  If our remainder is more than half the average, add one (poor mans rounding)
 	if ( (sum % numSamples) >= numSamples / 2 ) {
-		average =+ 1;
+		average += 1;
 	}
 
 	if (debug == 1) {
