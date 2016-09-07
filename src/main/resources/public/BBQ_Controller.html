@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 5.2.0.4 (MacOSX)"/>
+	<meta name="created" content="2016-09-06T14:42:49.326527000"/>
+	<meta name="changed" content="2016-09-07T09:23:30.141791000"/>
+	<style type="text/css">
+		code.cjk { font-family: "Courier New", monospace }
+	</style>
+</head>
+<body lang="en-US" dir="ltr">
+<h1><img src="stg-logo.png" name="Image3" align="left" width="174" height="56" border="0"/>
+<br/>
+<br/>
+
+</h1>
+<h1 align="center">Ugly Drum BBQ Controller</h1>
+<p style="margin-bottom: 0in">Welcome to the STB BBQ controller. 
+This document contains instructions on how to build the hardware and
+install the software.</p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">Table
+of Contents</font></font></p>
+<ol>
+	<li/>
+<p>Hardware</p>
+	<li/>
+<p>Software</p>
+	<li/>
+<p>Usage</p>
+</ol>
+<p style="margin-top: 0.17in; page-break-after: avoid"><a name="Hardware"></a>
+<font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">1.
+ Hardware</font></font></p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">1.1
+Components:</font></font></p>
+<ul>
+	<li/>
+<p style="line-height: 100%">Arduino Metro Mini – 5v</p>
+	<li/>
+<p style="line-height: 100%">Raspberry Pi 3 (Model B)</p>
+	<li/>
+<p style="line-height: 100%">Micro SD Card</p>
+	<li/>
+<p style="line-height: 100%">USB to USB micro B</p>
+	<li/>
+<p style="line-height: 100%">Box to house the project</p>
+	<li/>
+<p style="line-height: 100%">4 BBQ temperature probes -
+	https://www.acurite.com/accessories-parts/acurite-cooking-replacement-parts.html</p>
+	<li/>
+<p style="line-height: 100%">External power supply (12v with
+	USB output)</p>
+	<li/>
+<p style="line-height: 100%">Fan extension cable</p>
+</ul>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">Electrical
+Components:</font></font></p>
+<ul>
+	<li/>
+<p>1 – Breadboard</p>
+	<li/>
+<p>4 – 2.5mm mono headphone jack -
+	http://www.allelectronics.com/make-a-store/item/smmj/2.5mm-mono-jack/1.html</p>
+	<li/>
+<p>1 – SPDT relay – <a href="https://amzn.com/B01H47YTJ4">https://amzn.com/B01H47YTJ4</a></p>
+	<li/>
+<p>1 – diode –
+	<a href="http://www.allelectronics.com/make-a-store/item/1n4007/rectifier-diode-1amp/1000piv/1.html">http://www.allelectronics.com/make-a-store/item/1n4007/rectifier-diode-1amp/1000piv/1.html</a></p>
+	<li/>
+<p>2 – LED lights (we used 1 red and 1 white)</p>
+	<li/>
+<p>3 – 1kOhm resistors</p>
+	<li/>
+<p>4 – 1M/100K/10K resistors – must match the nominal
+	resistance of the probes.</p>
+	<li/>
+<p>1 – 2n3904 transistor</p>
+	<li/>
+<p>1 – power connector compatible the power supply.</p>
+	<li/>
+<p>1 – PWM computer fan (typically a 4 wire computer fan. 
+	Blue is usually the PWM lead)</p>
+</ul>
+<p>Note that our controller used a power supply that has both 12v and
+5v USB outputs.  This was an expensive choice.  A better option would
+have been to get a simple 12v power brick and an automotive power
+port to USB converter, pull it apart and use that to convert to 5v
+for the Raspberry Pi.</p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">Misc</font></font></p>
+<ul>
+	<li/>
+<p>Wire</p>
+	<li/>
+<p>Solder</p>
+	<li/>
+<p>Soldering Iron</p>
+	<li/>
+<p>Drill</p>
+	<li/>
+<p>Dremel Tool</p>
+	<li/>
+<p>Voltage/resistance meter</p>
+</ul>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">1.2
+Circuits</font></font></p>
+<p>The below diagram illustrates the circuits to build.  I recommend
+using a solderless breadboard to start laying out the circuits.  Once
+you get it laid out and tested to your satisfaction, then break out
+the soldering iron.</p>
+<p>Keep in mind the pins can be changed somewhat.  The software is
+configured to use the pins specified, so that will need to be
+changed. 
+</p>
+<p>There are other things to be aware of:</p>
+<ul>
+	<li/>
+<p>Only some outputs are PWM enabled, so if you change the PWM
+	pin, make sure it is a PWM enabled output. 
+	</p>
+	<li/>
+<p>D0 and D1 are also serial port pins, which is in use via
+	the USB cable to talk with the PI.  Do not use them. 
+	</p>
+</ul>
+<p><img src="BBQ_Controller_Schematic_800_800.jpg" name="Image1" align="left" width="674" height="569" border="0"/>
+<br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p>1:  Probe Circuit</p>
+<p style="margin-left: 0.79in">This is a simple voltage divider
+circuit.  If the probe and the resistor are the same, the analog
+input should read exactly half the input voltage.  As the probe
+changes resistance, the reading at the analog input changes.  The
+Arduino reads that change and the software converts it into a
+temperature value.</p>
+<p style="margin-left: 0.79in">For the probes, you will need to build
+4, one connected to each of the analog inputs A0 – A3 on the
+Arduino.  Mount the 2.5mm headphone jack to the case and wire that to
+the circuit.  The probes we used have a braided sheath that is part
+of the circuit.  When wiring the headphone jack, make sure the analog
+input is on the deep part of the jack, and the ground is connected to
+the sheath.  
+</p>
+<p style="margin-left: 0.79in">Make sure the resistor (1M Ohm in the
+diagram) matches the nominal resistance of the probes.  When you get
+the probes, take the Ohm meter and measure it.  It should be close to
+1M, or 100k or 10k Ohm.  Use a matching resistor.</p>
+<p style="margin-left: 0.79in">The 3.3v output on the Arduino is
+regulated, so it should give a cleaner signal.  Connect it to the
+AREF input on the Arduino.</p>
+<p>2:  Light Circuit</p>
+<p style="margin-left: 0.79in">Run a 1k ohm resistor to the LED.  One
+LED is used to indicate that the fan is on.  The other indicates that
+the system is working.  On is ready, blinking is running a session. 
+These lights should be mounted on the box so that they can be seen.  
+</p>
+<p>3:  Fan Circuit</p>
+<p style="margin-left: 0.79in">This circuit is using a transistor to
+control the coil side of a relay.  This prevents the relay from
+drawing too much power off of the Arduino pin.  The relay controls
+the 12v power to the fan.  This only controls on/off.  The D10 PWM
+pin on the Arduino adjusts the fan speed.</p>
+<p style="margin-left: 0.79in">Review the pinout for the relay. 
+There are 2 output pins, one normally open, the other normally
+closed.  The fan should be on the normally open pin (aka, no power
+when the relay is not energized).</p>
+<p style="margin-left: 0.79in">Make sure the fan ground is connected
+to the 12v ground, NOT the same as the Arduino ground.</p>
+<p>Here is what our board looks like.</p>
+<p><img src="Our_Board.JPG" name="Image2" align="left" width="1120" height="840" border="0"/>
+<br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p>You can see the 4 pairs of probe wires coming off the bottom (and
+yes, those are cat5 pairs, sometimes you use what you have handy). 
+The LED lights are mounted directly on the board.  The board is
+attached to the top of the case and those lights stick through.  
+</p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><a name="Software"></a>
+<font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">2
+Software </font></font>
+</p>
+<p>Go to <a href="http://www.somewhere.com/">www.somewhere.com</a>
+and download the software.  This repo contains both the Arduino and
+the Raspberry pi software.</p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><a name="Arduino Software"></a>
+<font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">2.1
+Arduino</font></font></p>
+<p>You will need to install the Arduino SDK on the Raspberry Pi. 
+Under the src/main/resources directory is a file: TempComm.ino file. 
+Open that with the Arduino SDK.  Upload it to the Arduino.  If
+everything goes well, you can open the Serial Monitor and start
+sending commands to the Arduino.  The commands are comma “,”
+separated and semi-colon “;” terminated.  Probe are 1-4, the fan
+is 5, and the system LED is 6.  So, to read all 4 probes, send the
+command: “1,2,3,4;” (without the quotes).  The Arduino should
+return something like “1=459,2=547,3=548,4=551;”.  Those numbers
+are the raw analog readings.  If you want to set the fan, send in
+“5=255;” and see what happens.  The Fan takes 0-255.  The system
+light is 0=off and &gt;0 is on.  The Arduino will return the current
+value, which should be the value you just sent it.</p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">2.2
+Raspberry Pi</font></font></p>
+<p>The latest Raspberry Pi has built in WIFI.  You will need to
+connect your Pi to your WIFI.  You can do that via the desktop or you
+can do it via the command line.  See this link for more details:
+http://weworkweplay.com/play/automatically-connect-a-raspberry-pi-to-a-wifi-network/</p>
+<p>Running a “./mvnw clean install” from inside the directory
+will build the software and package everything into a nice spring
+boot executable jar file in the target directory.  If you are doing
+this on the Pi, you can run it from there, otherwise you will have to
+scp it to the Pi:  “scp target/smoker.VERSION.SNAPSHOT.jar
+<a href="mailto:pi@Pi.ip.address">pi@Pi.ip.address</a>:.”.  Once on
+the Pi, run it with the following command: “sudo java -jar
+smoker.VERSION.SNAPSHOT.jar &amp;”.  Then load up your favorite web
+browser and go to <a href="http://PI.ip.address/">http://PI.ip.address</a>
+and you will see the very basic index.html page.</p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">3
+Usage</font></font></p>
+<p>There currently isn’t a nice web interface for this app.  All
+commands need to be given via REST calls.  Once on the index.html
+page, there is a link to the swagger documentation.  Swagger will
+help you create those REST calls.  
+</p>
+<p><img src="Swagger.png" name="Image4" align="left" width="1120" height="447" border="0"/>
+<br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p>Lets start with the hardware-controller.  This gives basic direct
+access to the hardware.  You can read temperatures off the probes,
+turn the light off/on, as well as set the fan.</p>
+<p><img src="SwaggerHardware.png" name="Image5" align="left" width="1120" height="503" border="0"/>
+<br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p>Feel free to try these out.  Most are self explanatory</p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">3.1
+Calibration</font></font></p>
+<p>Each brand of probe needs to be calibrated.  That number is called
+BETA.  To calibrate the probes, place them in boiling water.  You can
+either use a known accurate thermometer to verify the temperature, or
+you can assume you are close to the 212<font face="Liberation Serif, serif">º</font>f
+boiling point (We are at about 4600 ft, so water boils at 208<font face="Liberation Serif, serif">ºf±).
+ Once the probes are in and the water is boiling, use the calibrate
+link and send in the temperature in ºKelvin.  This will provide new
+BETA values for each probe.  Average them and set those in the
+application.properties files (dev, test, prod, default).  The setting
+is “thermometer.calibration.beta=4120”.  You will need to rebuild
+and redeploy the app for those new settings to take effect.</font></p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">3.2
+Software Overview</font></font></p>
+<p>There are a few concepts to understand:</p>
+<p><b>temperature-timing and temperature-timing-details:</b>  This
+defines the target temperature and how long it should maintain that
+temperature.  The temperature-timing is merely a grouping of details.
+ The details have a target temperature, time at temperature, as well
+as an order.  So if you want to smoke ribs at a 3-2-1 (3 hours smoke,
+2 hours at 220, and 1 hour at smoke), there is a program to do that. 
+</p>
+<p><b>Turn-off-criteria:  </b><span style="font-weight: normal">This
+can be linked to a temperature timing.  This allows you to specify
+which probes (comma separated list) and a target temperature.  Once
+all probes are at or above that temp, it will shut down the fan and
+end the smoking session.</span></p>
+<p><b>Smoke-Session:</b><span style="font-weight: normal"> This is
+the individual cooking instance.  You start this off by sending in a
+few details.  Something like:</span></p>
+<address>{</address>
+<address>  &quot;description&quot;: &quot;string&quot;,</address>
+<address>  &quot;id&quot;: 0,</address>
+<address>  &quot;meat&quot;: &quot;string&quot;,</address>
+<address>  &quot;referenceThermometer&quot;: 1,</address>
+<address>  &quot;temperatureTimingId&quot;: 4</address>
+<address>}</address>
+<p><span style="font-weight: normal">That will kick off a smoking
+session with probe 1 as its ambient thermometer, using the
+temperature timing “program” #4.  The id field is set by the
+controller and will be returned in the response.  The response will
+look something like:</span></p>
+<address><code class="western"><font face="Liberation Serif">{</font></code></address>
+<address><code class="western">  </code><code class="western"><font face="Liberation Serif">&quot;id&quot;:
+76,</font></code></address>
+<address><code class="western">  </code><code class="western"><font face="Liberation Serif">&quot;meat&quot;:
+&quot;test&quot;,</font></code></address>
+<address><code class="western">  </code><code class="western"><font face="Liberation Serif">&quot;referenceThermometer&quot;:
+1,</font></code></address>
+<address><code class="western">  </code><code class="western"><font face="Liberation Serif">&quot;startDate&quot;:
+1473183735470,</font></code></address>
+<address><code class="western">  </code><code class="western"><font face="Liberation Serif">&quot;description&quot;:
+&quot;string&quot;,</font></code></address>
+<address><code class="western">  </code><code class="western"><font face="Liberation Serif">&quot;smokeSessionDetail&quot;:
+[],</font></code></address>
+<address><code class="western">  </code><code class="western"><font face="Liberation Serif">&quot;temperatureTimingId&quot;:
+4</font></code></address>
+<address><code class="western"><font face="Liberation Serif">}</font></code></address>
+<address><br/>
+
+</address>
+<p><span style="font-weight: normal">The id will allow you to get
+updates on the session, including the full details.  By default,
+every minute the program saves the probe values, its temp timing
+target and fan value.  The data is persisted on the Pi, so you can
+review the data at your leisure.</span></p>
+<p style="margin-top: 0.17in; page-break-after: avoid"><font face="Albany, sans-serif"><font size="4" style="font-size: 14pt">3.3
+Cooking</font></font></p>
+<p>Place probe 1 in the smoker.  Preferably not where it will get
+direct radiant heat from the coals.  This is the reference probe, and
+is used to set the target temperature.  Hook up the fan to the air
+input on your smoker.  We used a 3” to 1” PVC reducer to hook up
+to a 1” air inlet on the smoker.  We used HVAC tape to tape the fan
+to the PVC.  Close other air inlets.  Start your coals burning,
+making sure you have enough to burn the whole time.  Set your meat
+and put the other probes in the meat.  Plug in the controller and
+wait for the system light to turn on.  Usually about 90 seconds. 
+Connect to the swagger interface and create your smoke session.  The
+controller takes readings for 1 minute before activating the fan, so
+don’t worry if it doesn’t start up immediately.  You can now go
+in the house and monitor it from there.  Watch the
+<a href="http://192.168.1.21/swagger-ui.html#%21/smoke-session-controller/getDetailsUsingGET">/api/v1/smoke_session/{id}/details</a>
+for the latest readings.  
+</p>
+</body>
+</html>
