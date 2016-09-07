@@ -94,7 +94,7 @@ public class DummyHardwareInterfaceImpl implements Hardware {
 		results.put(2, 300d + ((double) 2 / 10) + fan + ((int) (Math.random() * 40 - 20)));
 		results.put(3, 300d + ((double) 3 / 10) + fan + ((int) (Math.random() * 40 - 20)));
 		results.put(4, 300d + ((double) 4 / 10) + fan + ((int) (Math.random() * 40 - 20)));
-		return null;
+		return results;
 	}
 
 }
