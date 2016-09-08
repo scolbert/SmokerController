@@ -3,42 +3,74 @@ package com.stg.manager;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.stg.AppConfig;
 import com.stg.model.Temperature;
 import com.stg.model.Temperature.Scale;
 
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = AppConfig.class)
-@ActiveProfiles(profiles = "test")
-//@TestPropertySource(locations="classpath:test.properties")
-@Ignore
 public class FanManagerTest {
 
-	@Autowired
-	private FanManager fanMgr;
+	private FanManager fanMgr = new FanManager();
+	
+	@Before
+	public void init() {
+		fanMgr.MAX_FAN_VALUE = 255;
+		fanMgr.MIN_FAN_VALUE = 0;
+		fanMgr.TEMP_HISTORY_COUNT = 5;
+		fanMgr.TEMP_HISTORY_COUNT_MIN = 4;
+		fanMgr.TEMP_DIST_THRESHOLD = 5;
+	}
 	
 
 	@Test
-	public void testMaxValue() {
-		assertEquals(new Integer(255), fanMgr.calculateFanValue(new Temperature(0, Scale.KELVIN), new Temperature(300, Scale.KELVIN), 0));
+	public void testStartupCold() {
+		assertEquals(new Integer(128), fanMgr.calculateFanValue(new Temperature(0, Scale.KELVIN), new Temperature(300, Scale.KELVIN), 0));
 	}
 	
 	@Test
-	public void testMinValue() {
-		assertEquals(new Integer(0), fanMgr.calculateFanValue(new Temperature(300, Scale.KELVIN), new Temperature(0, Scale.KELVIN), 255));
+	public void testStartupHot() {
+		assertEquals(new Integer(100), fanMgr.calculateFanValue(new Temperature(300, Scale.KELVIN), new Temperature(0, Scale.KELVIN), 200));
+		assertEquals(new Integer(1), fanMgr.calculateFanValue(new Temperature(300, Scale.KELVIN), new Temperature(0, Scale.KELVIN), 0));
+	}
+	
+	@Test
+	public void testRunWarmingUp1() {
+		setAverage(new Temperature(295, Scale.KELVIN));
+		assertEquals(new Integer(205), fanMgr.calculateFanValue(new Temperature(300, Scale.KELVIN), new Temperature(377, Scale.KELVIN), 128));
+	}
+	
+	@Test
+	public void testRunWarmingUp2() {
+		setAverage(new Temperature(295, Scale.KELVIN));
+		assertEquals(new Integer(129), fanMgr.calculateFanValue(new Temperature(320, Scale.KELVIN), new Temperature(377, Scale.KELVIN), 128));
+	}
+	
+	@Test
+	public void testRunCoolingDown1() {
+		setAverage(new Temperature(400, Scale.KELVIN));
+		assertEquals(new Integer(106), fanMgr.calculateFanValue(new Temperature(399, Scale.KELVIN), new Temperature(377, Scale.KELVIN), 128));
+	}
+	
+	@Test
+	public void testRunCoolingDown2() {
+		setAverage(new Temperature(400, Scale.KELVIN));
+		assertEquals(new Integer(127), fanMgr.calculateFanValue(new Temperature(395, Scale.KELVIN), new Temperature(377, Scale.KELVIN), 128));
+	}
+	
+	@Test
+	public void testRunWrongWay() {
+		setAverage(new Temperature(380, Scale.KELVIN));
+		assertEquals(new Integer(130), fanMgr.calculateFanValue(new Temperature(375, Scale.KELVIN), new Temperature(377, Scale.KELVIN), 128));
+	}
+	
+	private void setAverage(Temperature temp) {
+		fanMgr.tempHistory.clear();
+		fanMgr.tempHistory.offer(temp);
+		fanMgr.tempHistory.offer(temp);
+		fanMgr.tempHistory.offer(temp);
+		fanMgr.tempHistory.offer(temp);
+		fanMgr.tempHistory.offer(temp);
 	}
 
 }
