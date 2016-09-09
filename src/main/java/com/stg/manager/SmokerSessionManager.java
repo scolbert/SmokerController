@@ -123,6 +123,7 @@ public class SmokerSessionManager {
 			logger.error("Thread wont die.  Please restart the app");
 		}
 
+		smoker.setFan(0);
 		smoker.setSessionLight(true);
 		currentSession = null;
 		smokeMonitor = null;
