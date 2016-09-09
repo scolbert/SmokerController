@@ -360,7 +360,7 @@ help you create those REST calls.
 </p>
 <p>This app uses an H2 db on the back end.  There is an H2 console available through the web browser.  
 It is linked through the main page.  It is only available to a web browser running locally.  Yes, I tried
-spring.h2.console.settings.web-allow-others=true and it did not work.  It is probably easies to build the table structure by 
+spring.h2.console.settings.web-allow-others=true and it did not work.  It is probably easiest to build the table structure by 
 first deploying the application with application property : spring.jpa.hibernate.ddl-auto=create.  Then set it back to none.
 That will build the db from the model. There is a Initial_DB_setup_DML.sql that 
 will populate the db with a few useful timing programs.  Run that file through the H2 console.
