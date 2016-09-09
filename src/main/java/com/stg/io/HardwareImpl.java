@@ -32,10 +32,10 @@ public class HardwareImpl implements Hardware {
 	@Value("${thermometer.resistor.resistance}")
 	private long RESISTOR;
 
-	@Value("${min.fan.value}")
+	@Value("${fan.manager.min.fan.value}")
 	private Integer minFanValue;
 
-	@Value("${max.fan.value}")
+	@Value("${fan.manager.max.fan.value}")
 	private Integer maxFanValue;
 
 	@Value("${hardware.calibration.sample.count}")

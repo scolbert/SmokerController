@@ -166,8 +166,8 @@ class HardwareCommunicatorImpl implements HardwareCommunicator {
 		
 		if (responseReader.ready()) {
 			String response = responseReader.readLine();
-			if (logger.isInfoEnabled()) {
-				logger.info("Communication with Arduino: " + send + " : " + response);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Communication with Arduino: " + send + " : " + response);
 			}
 			if (StringUtils.hasText(response)) {
 				results = parseResponse(response);
