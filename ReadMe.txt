@@ -13,15 +13,19 @@ The index.html has links to swagger so you can manipulate the interface directly
 The white light turns on when the smoker is ready to takes commands.  The white light flashes when there is a session going on.  
 The red light is on when the fan is on.
 
-Starting the app instructions
-After making changes to the back end code
+-----
+
+Deploying code locally after making changes to the back end code
     Navigate to the root directory (SmokerController directory)
     Build the app using mvn clean install
     Start the app using java -jar target/smoker-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
 
 
-After making changes to the front end
+Basic front end setup for development
     install webpack (using NPM) globally before trying to follow the remaining steps
+    run npm install to get the needed dependencies
+
+Deploying code locally after making changes to the front end
     run webpack to bundle the changes into the app
         Navigate to SmokerController/src/main/resources/public/js using the cli
         type webpack on the command prompt
