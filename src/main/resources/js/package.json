@@ -1,0 +1,16 @@
+{
+  "name": "stephencolbert",
+  "version": "1.0.0",
+  "description": "ui for the smoker controller",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephen Colbert",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-router": "^4.1.1"
+  }
+}
