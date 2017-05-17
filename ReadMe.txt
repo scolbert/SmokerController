@@ -21,6 +21,7 @@ After making changes to the back end code
 
 
 After making changes to the front end
+    install webpack (using NPM) globally before trying to follow the remaining steps
     run webpack to bundle the changes into the app
         Navigate to SmokerController/src/main/resources/public/js using the cli
         type webpack on the command prompt
