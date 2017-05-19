@@ -11254,6 +11254,10 @@ var _react = __webpack_require__(6);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _PlanSelector = __webpack_require__(228);
+
+var _PlanSelector2 = _interopRequireDefault(_PlanSelector);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var StartSmokingPage = function StartSmokingPage(props) {
@@ -11269,7 +11273,8 @@ var StartSmokingPage = function StartSmokingPage(props) {
             'h1',
             null,
             'Start Smoking Page'
-        )
+        ),
+        _react2.default.createElement(_PlanSelector2.default, null)
     );
 };
 
@@ -25590,6 +25595,46 @@ var valueEqual = function valueEqual(a, b) {
 };
 
 exports.default = valueEqual;
+
+/***/ }),
+/* 228 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = __webpack_require__(6);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var PlanSelector = function PlanSelector(props) {
+    return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+            'select',
+            null,
+            _react2.default.createElement(
+                'option',
+                { value: '1' },
+                'Plan One'
+            ),
+            _react2.default.createElement(
+                'option',
+                { value: '2' },
+                'Plan Two'
+            )
+        )
+    );
+};
+
+exports.default = PlanSelector;
 
 /***/ })
 /******/ ]);
