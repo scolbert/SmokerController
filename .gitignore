@@ -5,3 +5,5 @@
 target/
 *.log
 /.idea
+/src/main/resources/public/js/node_modules
+/target
