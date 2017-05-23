@@ -1,12 +1,15 @@
 import React from 'react';
 
 const PlanSelector = (props) => {
+    const plans = this.props.plans;
+    const plansAsOptions = plans.map((item) => {
+        return (
+            <option value={item.id} > {item.name}</option>
+        );
+    })
     return(
         <div>
-            <select>
-                <option value='1'>Plan One</option>
-                <option value='2'>Plan Two</option>
-            </select>
+            {plansAsOptions}
         </div>
     )
 }

@@ -9,4 +9,5 @@ const CreateSmokingPlanPage = (props) => {
     )
 }
 
+
 export default CreateSmokingPlanPage;

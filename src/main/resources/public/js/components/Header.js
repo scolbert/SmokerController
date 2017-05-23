@@ -5,7 +5,7 @@ const Header = (props) => {
     return (
         <header>
             <nav>
-                <Link to="/">Start Smoking</Link> <Link to="/createSmokingPlan">Create A Smoking Plan</Link>  <Link to="/preferences">Preferences</Link>
+                <Link to="/">Start Smoking</Link>   -   <Link to="/createSmokingPlan">Create A Smoking Plan</Link>    -   <Link to="/preferences">Preferences</Link>
             </nav>
         </header>
     )
