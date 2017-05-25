@@ -35,3 +35,11 @@ Deploying code locally after making changes to the front end
     open UI
         Navigate to localhost:8080
         Select User Interface
+
+Running webpack-dev-server
+    install webpack dev server using
+        npm install webpack-dev-server -g
+    instead of running webpack you run
+        localhost:8080/webpack-dev-server/userinterface.html
+    when it automatically refreshes you may need to hit refresh on the browser if it doesn't come up
+        

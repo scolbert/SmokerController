@@ -11592,7 +11592,7 @@ var _PreferencesPage2 = _interopRequireDefault(_PreferencesPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Main = function Main(props) {
+var Main = function Main() {
     return _react2.default.createElement(
         'main',
         null,
@@ -11626,11 +11626,11 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PlanSelector = function PlanSelector(props) {
-    var plans = [{ id: 1, name: 'Test Smoking Plan 1' }, { id: 2, name: 'Test Smoking Plan 2' }];
+    var plans = [{ key: 1, name: 'Test Smoking Plan 1' }, { key: 2, name: 'Test Smoking Plan 2' }];
     var plansAsOptions = plans.map(function (item) {
-        return _react2.default.createElement(
+        return { key: item.key }, _react2.default.createElement(
             'option',
-            { value: item.id },
+            { value: item.key },
             ' ',
             item.name
         );
@@ -11723,6 +11723,10 @@ exports.default = PreferencesPage;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
@@ -11752,6 +11756,7 @@ var StartSmokingPage = function StartSmokingPage(props) {
         _react2.default.createElement(_PlanSelector2.default, null)
     );
 };
+
 //
 // function SmokingPlanReducer(state = {plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, name:'Test Smoking Plan 2'}]}, action) {
 //     return state;
@@ -11759,7 +11764,7 @@ var StartSmokingPage = function StartSmokingPage(props) {
 //
 // const store = createStore(SmokingPlanReducer);
 //
-// export default StartSmokingPage;
+exports.default = StartSmokingPage;
 
 /***/ }),
 /* 109 */
