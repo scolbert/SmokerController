@@ -1,7 +1,7 @@
 import React from 'react';
 
 const PlanSelector = (props) => {
-    const plans = [{key:1, name:'Test Smoking Plan 1'}, {key:2, name:'Test Smoking Plan 2'}];
+    const plans = props.plans;
     const plansAsOptions = plans.map((item) => {
         return (
             {key: item.key},
