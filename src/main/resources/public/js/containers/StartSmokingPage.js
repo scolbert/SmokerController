@@ -1,6 +1,7 @@
 import React from 'react';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import PlanSelector from '../components/PlanSelector';
+import logger from 'redux-logger';
 
 const StartSmokingPage = (props) => (
     <div>
@@ -47,13 +48,14 @@ const sessionReducer = (state = {
     return state;
 };
 
-const store = createStore(combineReducers({planReducer, sessionReducer}));
+const store = createStore(combineReducers({planReducer, sessionReducer}), {}, applyMiddleware(logger));
 
 store.subscribe(() => {
     // if(store.getState().plans[2] != undefined) console.log(store.getState().plans[2].name);
-    const state = store.getState();
-    console.log("Store updated! - " + store.getState().planReducer.plans[1].name);
-    console.log(store.getState().sessionReducer.session.description);
+    // const state = store.getState();
+    // console.log("Store updated! - " + store.getState().planReducer.plans[1].name);
+    // console.log(store.getState().sessionReducer.session.description);
+    // console.log("State is ", store.getState());
 });
 
 store.dispatch({
