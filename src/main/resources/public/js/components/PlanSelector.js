@@ -4,8 +4,7 @@ const PlanSelector = (props) => {
     const plans = props.plans;
     const plansAsOptions = plans.map((item) => {
         return (
-            {key: item.key},
-            <option value={item.key} > {item.name}</option>
+            <option key={item.id} value={item.id} >{item.name}</option>
         );
     })
     return(
