@@ -1,6 +1,7 @@
 export function getPlans() {
     return ({
-        type: "GET_PLANS"
+        type: "GET_PLANS",
+        payload: [{id: '3', name: 'Plan Retrieved From Action'}, {id: '4', name:'Another Plan Returned From Action'}]
     });
 }
 

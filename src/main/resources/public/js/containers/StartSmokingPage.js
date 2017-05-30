@@ -1,13 +1,17 @@
 import React from 'react';
 import PlanSelector from '../components/PlanSelector';
 import { connect } from 'react-redux';
-import { setPlans } from '../actions/planActions.js';
+import { getPlans } from '../actions/planActions.js';
 
 class StartSmokingPage extends React.Component {
     constructor(props) {
         super(props);
 
 
+    }
+
+    componentWillMount() {
+        this.props.getPlans();
     }
 
     render() {

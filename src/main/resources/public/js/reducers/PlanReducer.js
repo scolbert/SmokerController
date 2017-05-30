@@ -3,7 +3,7 @@ const planReducer = (state = {plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, 
     switch(action.type) {
         // HTTP GET to /api/v1/TempTiming gets list of all temperature timing programs
         case "GET_PLANS":
-            state = state;
+            state = {plans: action.payload};
             break;
         // post to /api/v1/TempTiming adds a temperature timing program
         case "PLAN_ADD":
