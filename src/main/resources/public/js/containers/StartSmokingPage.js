@@ -19,7 +19,11 @@ class StartSmokingPage extends React.Component {
             <div>
                 <title>StartSmokingPage Page</title>
                 <h1>Start Smoking Page</h1>
-                <PlanSelector plans={this.props.planState.plans}/>
+                <PlanSelector plans={this.props.planState.plans}/><br />
+                <button>Start</button><button>Stop</button>
+                <div style={{border: '1px solid black'}}>
+                    Message Goes Here
+                </div>
             </div>
         )
     }
