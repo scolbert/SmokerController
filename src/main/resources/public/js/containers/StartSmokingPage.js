@@ -2,10 +2,13 @@ import React from 'react';
 import PlanSelector from '../components/PlanSelector';
 import { connect } from 'react-redux';
 import { getPlans } from '../actions/planActions.js';
+import MessageBox from '../components/MessageBox.js';
 
 class StartSmokingPage extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {message:''};
 
 
     }
@@ -21,9 +24,7 @@ class StartSmokingPage extends React.Component {
                 <h1>Start Smoking Page</h1>
                 <PlanSelector plans={this.props.planState.plans}/><br />
                 <button>Start</button><button>Stop</button>
-                <div style={{border: '1px solid black'}}>
-                    Message Goes Here
-                </div>
+                <MessageBox message={this.state.message} />
             </div>
         )
     }
