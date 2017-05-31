@@ -1,4 +1,7 @@
-const planReducer = (state = {plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, name:'Test Smoking Plan 2'}]},
+const planReducer = (state = {
+                        plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, name:'Test Smoking Plan 2'}],
+                        selectedPlan: '1'
+                     },
                      action) => {
     switch(action.type) {
         case "GET_PLANS":
