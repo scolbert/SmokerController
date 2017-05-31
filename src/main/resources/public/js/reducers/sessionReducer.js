@@ -5,10 +5,12 @@ const sessionReducer = (state = {sessionState: {startSession: () => {console.log
     switch(action.type) {
         // HTTP POST to /api/v1/smoke_session
         case "START_SESSION":
-            state = {session:action.payload};
+            // state = {session:action.payload};
+            state = Object.assign({}, state, {lastStartedSession:action.payload})
             break;
         case "STOP_SESSION":
             state = {session:action.payload};
+            state = Object.assign({}, state, {lastStoppedSession:action.payload})
             break;
     }
     return state;
