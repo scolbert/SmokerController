@@ -6,9 +6,9 @@ const planReducer = (state = {plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, 
             state = {plans: action.payload};
             break;
         // post to /api/v1/TempTiming adds a temperature timing program
-        case "PLAN_ADD":
-            state.plans = state.plans.concat(action.payload);
-            break;
+        // case "PLAN_ADD":
+        //     state.plans = state.plans.concat(action.payload);
+        //     break;
     }
     return state;
 };
