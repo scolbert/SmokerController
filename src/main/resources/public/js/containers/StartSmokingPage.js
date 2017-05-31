@@ -1,7 +1,7 @@
 import React from 'react';
 import PlanSelector from '../components/PlanSelector';
 import { connect } from 'react-redux';
-import { getPlans } from '../actions/planActions.js';
+import { getPlans, handlePlanSelection } from '../actions/planActions.js';
 import { startSession, stopSession } from '../actions/sessionActions.js';
 import MessageBox from '../components/MessageBox.js';
 
@@ -10,8 +10,6 @@ class StartSmokingPage extends React.Component {
         super(props);
 
         this.state = {message:''};
-
-
     }
 
     componentWillMount() {
@@ -23,7 +21,7 @@ class StartSmokingPage extends React.Component {
             <div>
                 <title>StartSmokingPage Page</title>
                 <h1>Start Smoking Page</h1>
-                <PlanSelector plans={this.props.planState.plans}/><br />
+                <PlanSelector plans={this.props.planState.plans} onMessageSelected={this.props.handlePlanSelection} /><br />
                 <button onClick={this.props.startSession} >Start</button>
                 <button onClick={this.props.stopSession}>Stop</button><br />
                 <MessageBox message={this.state.message} />
@@ -42,7 +40,11 @@ class StartSmokingPage extends React.Component {
     const mapDispatchToProps = (dispatch) => {
         return {
             getPlans: () => {
-                dispatch( getPlans() );
+               dispatch( getPlans() );
+            },
+            handlePlanSelection: (e) => {
+                console.log("inside of handlePlanSelection");
+                dispatch( handlePlanSelection(e) );
             },
             startSession: () => {
                 dispatch( startSession() );

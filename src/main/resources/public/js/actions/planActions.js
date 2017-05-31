@@ -13,3 +13,13 @@ export function getPlans() {
         });
     }
 }
+
+export function handlePlanSelection(e) {
+    e.persist();
+    return dispatch => {
+        dispatch({
+            type: "SET_SELECTED_PLAN",
+            payload: e.target.value
+        })
+    }
+}
