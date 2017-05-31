@@ -9,7 +9,7 @@ const sessionReducer = (state = {sessionState: {startSession: () => {console.log
             state = Object.assign({}, state, {lastStartedSession:action.payload})
             break;
         case "STOP_SESSION":
-            state = {session:action.payload};
+            // state = {session:action.payload};
             state = Object.assign({}, state, {lastStoppedSession:action.payload})
             break;
     }
@@ -17,6 +17,3 @@ const sessionReducer = (state = {sessionState: {startSession: () => {console.log
 };
 
 export default sessionReducer;
-
-
-// I think this uses mutating state changes and I need to change it to non-mutating state changes here

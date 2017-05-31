@@ -1,14 +1,23 @@
 import $ from 'jquery';
+import store from '../store.js';
 
 export function startSession() {
     return dispatch => {
+        const selectedPlan = store.getState().planState.selectedPlan;
+        const selectedPlanDetails = store.getState().planState.plans[convertSelectIndexToArrayIndex(selectedPlan)];
+
         $.ajax({
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             url: 'http://localhost:8080/api/v1/smoke_session',
-            data: JSON.stringify({id:1, description:'Test Description', meat:'ribs', referenceThermometer: 1, temperatureTimingId: 5}),
+            data: JSON.stringify({
+                id:1,
+                description: selectedPlanDetails.description,
+                meat:'meat not specified',
+                referenceThermometer: 1,
+                temperatureTimingId: selectedPlanDetails.id}),
             method: 'POST',
             success: (response) => {
                 dispatch ({
@@ -18,6 +27,10 @@ export function startSession() {
             dataType: 'application/json'
         });
     }
+}
+
+function convertSelectIndexToArrayIndex(index){
+    return index -1;
 }
 
 export function stopSession() {
