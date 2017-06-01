@@ -2,6 +2,7 @@ package com.stg.rest.controller;
 
 import java.util.List;
 
+import com.stg.model.TemperatureTiming;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,11 @@ public class TurnOffCriteriaController {
 		TurnOffCriteria turnOff = turnOffRepo.getOne(id);
 		turnOffRepo.delete(turnOff);
 		return turnOff;
+	}
+
+	@CrossOrigin
+	@RequestMapping(value = "", method = RequestMethod.POST)
+	public TurnOffCriteria create(@RequestBody TurnOffCriteria newTurnOffCriteria) {
+		return turnOffRepo.saveAndFlush(newTurnOffCriteria);
 	}
 }
