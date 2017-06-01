@@ -5,11 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.stg.model.TemperatureTiming;
 import com.stg.model.TemperatureTimingDetail;
@@ -22,21 +18,25 @@ public class TemperatureTimingController {
 	@Autowired
 	private TemperatureTimingRepository timingRepo;
 
+	@CrossOrigin
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<TemperatureTiming> list() {
 		return timingRepo.findAll();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	public TemperatureTiming findOne(@PathVariable Long id) {
 		return timingRepo.findOne(id);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public TemperatureTiming create(@RequestBody TemperatureTiming newTiming) {
 		return timingRepo.saveAndFlush(newTiming);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	public TemperatureTiming edit(@PathVariable Long id, @RequestBody TemperatureTiming editTiming) {
 		TemperatureTiming existing = timingRepo.findOne(id);
@@ -44,6 +44,7 @@ public class TemperatureTimingController {
 		return timingRepo.saveAndFlush(existing);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	public TemperatureTiming delete(@PathVariable Long id) {
 		TemperatureTiming timing = timingRepo.getOne(id);
@@ -51,11 +52,13 @@ public class TemperatureTimingController {
 		return timing;
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}/details", method = RequestMethod.GET)
 	public List<TemperatureTimingDetail> getDetails(@PathVariable Long id) {
 		return timingRepo.findOne(id).getTempDetails();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}/details", method = RequestMethod.POST)
 	public List<TemperatureTimingDetail> addDetail(@PathVariable Long id,
 			@RequestBody TemperatureTimingDetail newDetail) {

@@ -7,11 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.stg.manager.SmokerSessionManager;
 import com.stg.model.SmokeSession;
@@ -28,11 +24,13 @@ public class SmokeSessionController {
 	@Autowired
 	SmokerSessionManager smokerSessionManager;
 
+	@CrossOrigin
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<SmokeSession> list() {
 		return smokeSessionRepository.findAll();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	public SmokeSession findOne(@PathVariable Long id) {
 		if (id == -1) {
@@ -40,7 +38,8 @@ public class SmokeSessionController {
 		}
 		return smokeSessionRepository.findOne(id);
 	}
-	
+
+	@CrossOrigin
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<SmokeSession> create(@RequestBody SmokeSession session) {
 		if (smokerSessionManager.isSessionInProgress()) {
@@ -54,23 +53,27 @@ public class SmokeSessionController {
 		return new ResponseEntity<>(currentSession, HttpStatus.OK);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}/STOP", method = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT})
 	public ResponseEntity<SmokeSession> stop() {
 		return new ResponseEntity<>(smokerSessionManager.stopSession(), HttpStatus.OK);
 	}
-	
+
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	public SmokeSession updateDescription(@PathVariable Long id, @RequestBody SmokeSession session) {
 		SmokeSession existingSession = smokeSessionRepository.findOne(id);
 		existingSession.setDescription(session.getDescription());
 		return smokeSessionRepository.saveAndFlush(existingSession);
 	}
-	
+
+	@CrossOrigin
 	@RequestMapping(value = "{id}/details", method = RequestMethod.GET)
 	public List<SmokeSessionDetail> getDetails(@PathVariable Long id) {
 		return smokeSessionRepository.findOne(id).getSmokeSessionDetail();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	public SmokeSession delete(@PathVariable Long id) {
 		SmokeSession existingSession = smokeSessionRepository.findOne(id);

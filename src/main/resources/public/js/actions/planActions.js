@@ -18,6 +18,10 @@ export function handlePlanSelection(e) {
     e.persist();
     return dispatch => {
         dispatch({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             type: "SET_SELECTED_PLAN",
             payload: e.target.value
         })

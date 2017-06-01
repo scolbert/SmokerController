@@ -1,5 +1,5 @@
 const planReducer = (state = {
-                        plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, name:'Test Smoking Plan 2'}],
+                        plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, name:'Test Smoking Plan 3'}],
                         selectedPlan: '1'
                      },
                      action) => {

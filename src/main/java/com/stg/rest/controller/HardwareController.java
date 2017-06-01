@@ -5,11 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.stg.io.Hardware;
 import com.stg.model.Temperature;
@@ -22,6 +18,7 @@ public class HardwareController {
 	@Autowired
 	private Hardware smoker;
 
+	@CrossOrigin
 	@RequestMapping(value = "Probe/{id}", method = RequestMethod.GET)
 	public Temperature getProbeReading(@PathVariable Integer id) {
 		if (id > 0 && id < 5) {
@@ -29,7 +26,8 @@ public class HardwareController {
 		}
 		return null;
 	}
-	
+
+	@CrossOrigin
 	@RequestMapping(value = "Probe", method = RequestMethod.GET)
 	public Map<Integer, Temperature> getAllProbeReading() {
 		Map<Integer, Temperature> results = new HashMap<>();
@@ -37,22 +35,26 @@ public class HardwareController {
 		return results;
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "Fan", method = RequestMethod.GET)
 	public Integer getFanSetting() {
 		return smoker.getFanSetting();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "Fan/{id}", method = { RequestMethod.PUT, RequestMethod.GET })
 	public Integer setFan(@PathVariable Integer id) {
 		smoker.setFan(id);
 		return smoker.getFanSetting();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "Light", method = RequestMethod.GET)
 	public boolean changeLight() {
 		return smoker.changeSessionLight();
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "Light/{id}", method = { RequestMethod.PUT, RequestMethod.GET })
 	public boolean setLight(@PathVariable Integer id) {
 		return smoker.setSessionLight(id > 0);
@@ -67,6 +69,7 @@ public class HardwareController {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
+	@CrossOrigin
 	@RequestMapping(value = "calibrate", method = { RequestMethod.PUT, RequestMethod.GET })
 	public Map<Integer, Integer> calibrate(@RequestBody Temperature temp) throws NumberFormatException, IllegalStateException, IOException, InterruptedException {
 		return smoker.calibrate(temp.getTemp(Scale.KELVIN));

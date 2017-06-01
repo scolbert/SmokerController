@@ -4,11 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.stg.model.TurnOffCriteria;
 import com.stg.repository.TurnOffCriteriaRepository;
@@ -20,12 +16,14 @@ public class TurnOffCriteriaController {
 	@Autowired
 	private TurnOffCriteriaRepository turnOffRepo;
 
+	@CrossOrigin
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<TurnOffCriteria> list() {
 		return turnOffRepo.findAll();
 	}
-	
 
+
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	public TurnOffCriteria edit(@PathVariable Long id, @RequestBody TurnOffCriteria editTiming) {
 		TurnOffCriteria existing = turnOffRepo.findOne(id);
@@ -33,6 +31,7 @@ public class TurnOffCriteriaController {
 		return turnOffRepo.saveAndFlush(existing);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	public TurnOffCriteria delete(@PathVariable Long id) {
 		TurnOffCriteria turnOff = turnOffRepo.getOne(id);
