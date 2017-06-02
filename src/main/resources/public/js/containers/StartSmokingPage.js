@@ -21,7 +21,7 @@ class StartSmokingPage extends React.Component {
             <div>
                 <title>StartSmokingPage Page</title>
                 <h1>Start Smoking Page</h1>
-                <Selector plans={this.props.planState.plans} onMessageSelected={this.props.handlePlanSelection} /><br />
+                <Selector data={this.props.planState.plans} onMessageSelected={this.props.handlePlanSelection} /><br />
                 <button onClick={this.props.startSession} >Start</button>
                 <button onClick={this.props.stopSession}>Stop</button><br />
                 <MessageBox message={this.state.message} />
