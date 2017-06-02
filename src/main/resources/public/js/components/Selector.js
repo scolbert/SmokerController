@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PlanSelector = (props) => {
+const Selector = (props) => {
     const plans = props.plans;
     const test = (e) => {console.log("testing")}
     const plansAsOptions = plans.map((item) => {
@@ -17,4 +17,4 @@ const PlanSelector = (props) => {
     )
 }
 
-export default PlanSelector;
+export default Selector;
