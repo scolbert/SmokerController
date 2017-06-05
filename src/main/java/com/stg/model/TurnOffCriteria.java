@@ -3,8 +3,7 @@ package com.stg.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import org.springframework.util.StringUtils;
 
@@ -12,6 +11,7 @@ import org.springframework.util.StringUtils;
 public class TurnOffCriteria {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private Temperature targetTemperature;
 	private String probes;

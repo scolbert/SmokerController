@@ -25,6 +25,8 @@ insert into TEMPERATURE_TIMING_DETAIL values (DEFAULT, 2,4, 1, select id from TE
 insert into TEMPERATURE_TIMING_DETAIL values (DEFAULT, 3,4, 355.3889, select id from TEMPERATURE_TIMING where name = 'test', null);
 insert into TEMPERATURE_TIMING_DETAIL values (DEFAULT, 4,null, 0, select id from TEMPERATURE_TIMING where name = 'test', null);
 
+insert into TURN_OFF_CRITERIA values (0, '1,2,3', 123);
+
 insert into settings values (1, 1,'CELSIUS');
 
 insert into SMOKE_SESSION values (DEFAULT, 'best ribs ever', 'ribs', 1, sysdate,3 );
