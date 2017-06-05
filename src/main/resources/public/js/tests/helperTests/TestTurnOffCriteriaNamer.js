@@ -1,4 +1,4 @@
-const namer =  require('../helpers/TurnOffCriteriaNamer.js');
+const namer =  require('../../helpers/TurnOffCriteriaNamer.js');
 const assert = require('assert');
 
 describe('createName', function(){

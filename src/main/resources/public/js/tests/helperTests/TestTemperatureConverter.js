@@ -1,4 +1,4 @@
-const converter =  require('../helpers/TemperatureConverter.js');
+const converter =  require('../../helpers/TemperatureConverter.js');
 const assert = require('assert');
 
 describe('convertKelvinToFarenheit', function(){
