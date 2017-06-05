@@ -1,4 +1,5 @@
 const helper =  require('../helpers/ArrayHelper.js');
+const tempConverter = require('../helpers/TemperatureConverter.js');
 
 const TurnOffCriteriaReducer = (state, action ) => {
     if(state === undefined) {
@@ -18,7 +19,7 @@ const TurnOffCriteriaReducer = (state, action ) => {
              newState = Object.assign({}, state, {probes: newProbeArray});
             break;
         case "SET_TEMPERATURE":
-            newState = Object.assign({}, state, {temperature: action.payload});
+            newState = Object.assign({}, state, {temperature: tempConverter.convertFarenheitToKelvin(action.payload)});
             break;
         case "SUCCESSFUL_SUBMIT":
             newState = Object.assign({}, state, {probes:[], temperature: 0});

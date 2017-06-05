@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import store from '../store.js';
+import convertFarenheitToKelvin from '../helpers/TemperatureConverter.js';
 
 export function toggleProbe(probeNumber) {
     return (
@@ -35,7 +36,7 @@ export function submit() {
                 id: 1,
                 probeList: criteriaState.probes,
                 probes:criteriaState.probes.toString(),
-                targetTemperature: {temp: criteriaState.temperature}
+                targetTemperature: {tempK: criteriaState.temperature}
             }),
             method: 'POST',
             success: (response) => {
