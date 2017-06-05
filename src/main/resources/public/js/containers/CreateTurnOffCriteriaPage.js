@@ -3,7 +3,7 @@ import Selector from '../components/Selector';
 import { connect } from 'react-redux';
 import { getPlans, handlePlanSelection } from '../actions/planActions.js';
 import { startSession, stopSession } from '../actions/sessionActions.js';
-import { toggleProbe, setTemperature } from '../actions/TurnOffCriteriaActions.js';
+import { toggleProbe, setTemperature, submit } from '../actions/TurnOffCriteriaActions.js';
 import MessageBox from '../components/MessageBox.js';
 
 class CreateTurnOffCriteriaPage extends React.Component {
@@ -34,7 +34,7 @@ class CreateTurnOffCriteriaPage extends React.Component {
                     </fieldset>
                 </div>
                 <br />
-                <button>Submit</button>
+                <button onClick={this.props.submit}>Submit</button>
             </div>
         )
     }
@@ -49,14 +49,15 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         toggleProbe: (e) => {
-            console.log("e.target.value is " + e.target.value);
             let probeNumber = e.target.value;
-            console.log("probe number " + probeNumber + " clicked");
             dispatch( toggleProbe(probeNumber) );
         },
         setTemperature: (e) => {
             let temperature = e.target.value;
             dispatch( setTemperature(temperature));
+        },
+        submit: (e) => {
+            dispatch( submit() );
         }
     }
 }
