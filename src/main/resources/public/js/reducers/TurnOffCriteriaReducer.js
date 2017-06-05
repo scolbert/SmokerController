@@ -17,6 +17,9 @@ const TurnOffCriteriaReducer = (state, action ) => {
             }
              newState = Object.assign({}, state, {probes: newProbeArray});
             break;
+        case "SET_TEMPERATURE":
+            newState = Object.assign({}, state, {temperature: action.payload});
+            break;
         default:
             newState = state;
     }

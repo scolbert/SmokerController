@@ -9,6 +9,15 @@ export function toggleProbe(probeNumber) {
     )
 }
 
+export function setTemperature(temperature) {
+    return (
+        {
+            type:"SET_TEMPERATURE",
+            payload: temperature
+        }
+    )
+}
+
 
 export function toggleIncludeProbe(probeNumber) {
 

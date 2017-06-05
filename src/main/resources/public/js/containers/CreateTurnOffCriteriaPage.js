@@ -3,7 +3,7 @@ import Selector from '../components/Selector';
 import { connect } from 'react-redux';
 import { getPlans, handlePlanSelection } from '../actions/planActions.js';
 import { startSession, stopSession } from '../actions/sessionActions.js';
-import { toggleProbe } from '../actions/TurnOffCriteriaActions.js';
+import { toggleProbe, setTemperature } from '../actions/TurnOffCriteriaActions.js';
 import MessageBox from '../components/MessageBox.js';
 
 class CreateTurnOffCriteriaPage extends React.Component {
@@ -22,7 +22,7 @@ class CreateTurnOffCriteriaPage extends React.Component {
                 <div style={{border: '1px solid black'}}>
                     <h3>Turn Off Criteria</h3>
                     <label>Temperature  </label>
-                    <input type='textBox' />
+                    <input type='textBox' onBlur={this.props.setTemperature} />
                     <br />
                     <br />
                     <fieldset>
@@ -53,6 +53,10 @@ const mapDispatchToProps = (dispatch) => {
             let probeNumber = e.target.value;
             console.log("probe number " + probeNumber + " clicked");
             dispatch( toggleProbe(probeNumber) );
+        },
+        setTemperature: (e) => {
+            let temperature = e.target.value;
+            dispatch( setTemperature(temperature));
         }
     }
 }
