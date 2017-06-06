@@ -6,24 +6,35 @@ import CookingPlanStep from '../components/CookingPlanStep.js';
 class CreateSmokingPlanPage extends React.Component {
     constructor(props){
         super(props);
+        this.render = this.render.bind(this);
     }
+
+    buildStepArray(){
+        let testArray = [{name:"nameOne", id:3}, {name:"namethree", id:5}];
+        let testFunction = (e) => {console.log("testFunction Called")};
+
+        let source = this.props.planSteps;
+        let destination = [];
+
+        for(let x = 0; x < source.length; x++) {
+            destination.push(
+                <CookingPlanStep probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />
+            )
+        }
+        return destination;
+    }
+
 
     render() {
 
-        let hourColumnWidth = 7;
+        let hourColumnWidth = 4;
+        let minuteColumnWidth = 4;
         let probeColumnWidth = 6;
         let temperatureColumnWidth = 9;
         let criteriaColumnWidth = 8;
         let deleteColumnWidth = 6;
         let addColumnWidth = 4;
         let labelWidth = 9;
-
-        let testArray = [{name:"nameOne", id:3}, {name:"nametwo", id:5}];
-        let testFunction = (e) => {console.log("testFunction Called")};
-        let cookingPlanStepArray = [
-            <CookingPlanStep probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />,
-            <CookingPlanStep probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />
-        ];
 
         return (
             <div>
@@ -39,7 +50,8 @@ class CreateSmokingPlanPage extends React.Component {
                     <table>
                         <thead>
                             <tr>
-                                <th style={{width: hourColumnWidth + 'em'}}>Hours &<br />Minutes</th>
+                                <th style={{width: hourColumnWidth + 'em'}}>Hours</th>
+                                <th style={{width: minuteColumnWidth + 'em'}}>Minutes</th>
                                 <th style={{width: probeColumnWidth + 'em'}}>Abient<br />Probe</th>
                                 <th style={{width: temperatureColumnWidth + 'em'}}>Temperature</th>
                                 <th style={{width: criteriaColumnWidth + 'em'}}>Turn Off<br />Criteria</th>
@@ -50,7 +62,7 @@ class CreateSmokingPlanPage extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                        {cookingPlanStepArray}
+                            {this.buildStepArray()}
                         </tbody>
                     </table>
                 </div>
@@ -62,7 +74,7 @@ class CreateSmokingPlanPage extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        criteriaState: state.criteriaState
+        planSteps: state.planState.activePlanSteps
     }
 }
 

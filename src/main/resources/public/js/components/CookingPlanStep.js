@@ -5,7 +5,10 @@ const CookingPlanStep = (props) =>{
     return (
         <tr>
             <td>
-                <input type="textBox" id="timeBox"/>
+                <input type="textBox" id="hoursBox"/>
+            </td>
+            <td>
+                <input type="textBox" id="minutesBox"/>
             </td>
             <td>
                 <Selector id="probeSelector" data={props.probeArray} onMessageSelected={props.onProbeSelected}></Selector>
