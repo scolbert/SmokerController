@@ -18,7 +18,7 @@ class CreateSmokingPlanPage extends React.Component {
 
         for(let x = 0; x < source.length; x++) {
             destination.push(
-                <CookingPlanStep probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />
+                <CookingPlanStep key={x} probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />
             )
         }
         return destination;
