@@ -20,6 +20,10 @@ class CreateSmokingPlanPage extends React.Component {
 
         let testArray = [{name:"nameOne", id:3}, {name:"nametwo", id:5}];
         let testFunction = (e) => {console.log("testFunction Called")};
+        let cookingPlanStepArray = [
+            <CookingPlanStep probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />,
+            <CookingPlanStep probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />
+        ];
 
         return (
             <div>
@@ -46,10 +50,11 @@ class CreateSmokingPlanPage extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            <CookingPlanStep probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />
+                        {cookingPlanStepArray}
                         </tbody>
                     </table>
                 </div>
+                <button>Submit</button>
             </div>
         )
     }
