@@ -12,6 +12,12 @@ const planReducer = (state = {
                                 temperature:0,
                                 selectedCriteria:1
                             }
+                        ],
+                        probeList:[
+                            {id: 1, name:"Probe 1"},
+                            {id: 2, name:"Probe 2"},
+                            {id: 3, name:"Probe 3"},
+                            {id: 4, name:"Probe 4"}
                         ]
                      },
                      action) => {

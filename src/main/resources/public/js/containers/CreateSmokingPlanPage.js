@@ -23,7 +23,7 @@ class CreateSmokingPlanPage extends React.Component {
                     key={source[x].key}
                     index={source[x].key}
                     order={source[x].order}
-                    probeArray={testArray}
+                    probeArray={this.props.probeList}
                     onProbeSelected={testFunction}
                     criteriaList={testArray}
                     onCriteriaSelected={testFunction}
@@ -85,7 +85,8 @@ class CreateSmokingPlanPage extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        planSteps: state.planState.activePlanSteps
+        planSteps: state.planState.activePlanSteps,
+        probeList: state.planState.probeList
     }
 }
 
