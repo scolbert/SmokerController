@@ -2,7 +2,7 @@ import React from 'react';
 import Selector from '../components/Selector.js';
 import { connect } from 'react-redux';
 import CookingPlanStep from '../components/CookingPlanStep.js';
-import { addStep, deleteStep, changeHours, changeMinutes, changeTemperature, changeAmbientProbe } from '../actions/planActions.js';
+import { addStep, deleteStep, changeHours, changeMinutes, changeTemperature, changeAmbientProbe, changeSelectedCriteria } from '../actions/planActions.js';
 import { getTurnOffCriteria } from '../actions/TurnOffCriteriaActions.js';
 import { createName } from '../helpers/TurnOffCriteriaNamer';
 import {convertKelvinToFarenheit} from '../helpers/TemperatureConverter.js';
@@ -40,7 +40,7 @@ class CreateSmokingPlanPage extends React.Component {
                     probeArray={this.props.probeList}
                     onProbeSelected={this.props.onProbeSelected}
                     criteriaList={this.addNameToTurnOffCriteria(this.props.turnOffCriteriaList)}
-                    onCriteriaSelected={testFunction}
+                    onCriteriaSelected={this.props.onCriteriaSelected}
                     onDelete={this.props.deleteStep}
                     onHoursChanged={this.props.onHoursChanged}
                     onMinutesChanged={this.props.onMinutesChanged}
@@ -130,6 +130,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onProbeSelected: (index, event) => {
             dispatch(changeAmbientProbe(index, event.target.value));
+        },
+        onCriteriaSelected: (index, event) => {
+            dispatch(changeSelectedCriteria(index, event.target.value));
         }
     }
 }

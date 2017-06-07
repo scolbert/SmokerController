@@ -71,3 +71,10 @@ export function changeAmbientProbe(index, probe){
     })
 }
 
+export function changeSelectedCriteria(index, criteria){
+    return({
+        type: "CHANGE_SELECTED_CRITERIA",
+        payload:{index: index, newSelectedCriteria:criteria}
+    })
+}
+

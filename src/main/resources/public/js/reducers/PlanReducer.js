@@ -94,6 +94,16 @@ const planReducer = (state = {
             })
             state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedSelectedProbe});
             break;
+        case "CHANGE_SELECTED_CRITERIA":
+            let activePlanStepsModifiedSelectedCriteria = state.activePlanSteps.map((item) => {
+                if(item.key === action.payload.index){
+                    return Object.assign({}, item, {selectedCriteria:action.payload.newSelectedCriteria})
+                } else {
+                    return item;
+                }
+            })
+            state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedSelectedCriteria});
+            break;
         default:
             state = state;
     }

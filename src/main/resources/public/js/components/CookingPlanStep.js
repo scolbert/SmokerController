@@ -17,7 +17,7 @@ const CookingPlanStep = (props) =>{
                 <input type="textBox" id="temperatureBox" onBlur={(e) => props.onTemperatureChanged(props.index, e)}/>
             </td>
             <td>
-                <Selector id="criteriaSelector" data={props.criteriaList} onMessageSelected={props.onCriteriaSelected}></Selector>
+                <Selector id="criteriaSelector" data={props.criteriaList} onMessageSelected={(e) => props.onCriteriaSelected(props.index, e)}></Selector>
             </td>
             <td>
                 <button onClick={() => props.onDelete(props.index)}>X</button>
