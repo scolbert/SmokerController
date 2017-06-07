@@ -37,7 +37,14 @@ const planReducer = (state = {
             };
             let newActivePlanSteps = [...state.activePlanSteps, newStep];
             state = Object.assign({}, state, {nextStep:(newKey + 1), activePlanSteps: newActivePlanSteps});
-
+            break;
+        case "DELETE_STEP":
+            let key = action.payload;
+            let alteredArray = state.activePlanSteps.filter((item) => {
+                if(key === item.key) return false;
+                return true;
+            })
+            state = Object.assign({}, state, {activePlanSteps: alteredArray});
             break;
         default:
             state = state;

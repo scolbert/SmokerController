@@ -20,7 +20,7 @@ const CookingPlanStep = (props) =>{
                 <Selector id="criteriaSelector" data={props.criteriaList} onMessageSelected={props.onCriteriaSelected}></Selector>
             </td>
             <td>
-                <button>X</button>
+                <button onClick={() => props.onDelete(props.index)}>X</button>
             </td>
         </tr>
     )

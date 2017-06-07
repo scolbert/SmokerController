@@ -2,7 +2,7 @@ import React from 'react';
 import Selector from '../components/Selector.js';
 import { connect } from 'react-redux';
 import CookingPlanStep from '../components/CookingPlanStep.js';
-import { addStep } from '../actions/planActions.js';
+import { addStep, deleteStep } from '../actions/planActions.js';
 
 class CreateSmokingPlanPage extends React.Component {
     constructor(props){
@@ -19,11 +19,21 @@ class CreateSmokingPlanPage extends React.Component {
 
         for(let x = 0; x < source.length; x++) {
             destination.push(
-                <CookingPlanStep key={source[x].key} order={source[x].order} probeArray={testArray} onProbeSelected={testFunction} criteriaList={testArray} onCriteriaSelected={testFunction} />
+                <CookingPlanStep
+                    key={source[x].key}
+                    index={source[x].key}
+                    order={source[x].order}
+                    probeArray={testArray}
+                    onProbeSelected={testFunction}
+                    criteriaList={testArray}
+                    onCriteriaSelected={testFunction}
+                    onDelete={this.props.deleteStep}
+                />
             )
         }
         return destination;
     }
+
 
 
     render() {
@@ -88,6 +98,10 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(addStep());
             // add the step to state
             // increment nextStep in state
+        },
+        deleteStep:(key) => {
+            console.log("delete clicked");
+            dispatch(deleteStep(key));
         }
     }
 }

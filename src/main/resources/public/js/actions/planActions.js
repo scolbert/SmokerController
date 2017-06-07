@@ -35,3 +35,11 @@ export function addStep() {
         payload: 2
     })
 }
+
+export function deleteStep(key) {
+    console.log("Inside of planAction.deleteStep");
+    return ({
+        type: "DELETE_STEP",
+        payload:key
+    })
+}
