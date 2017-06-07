@@ -3,7 +3,7 @@ const tempConverter = require('../helpers/TemperatureConverter.js');
 
 const TurnOffCriteriaReducer = (state, action ) => {
     if(state === undefined) {
-        state = {temperature: 0, probes:[]};
+        state = {temperature: 0, probes:[], turnOffCriteriaList:[]};
     }
 
     let newProbeArray = [];
@@ -23,6 +23,10 @@ const TurnOffCriteriaReducer = (state, action ) => {
             break;
         case "SUCCESSFUL_SUBMIT":
             newState = Object.assign({}, state, {probes:[], temperature: 0});
+            break;
+        case "GET_TURN_OFF_CRITERIA":
+            console.log("Inside reducer.GET_TURN_OFF_CRITERIA that list is ", action.payload)
+            newState = Object.assign({}, state, {turnOffCriteriaList:action.payload})
             break;
         default:
             newState = state;

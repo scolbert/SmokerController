@@ -3,11 +3,17 @@ import Selector from '../components/Selector.js';
 import { connect } from 'react-redux';
 import CookingPlanStep from '../components/CookingPlanStep.js';
 import { addStep, deleteStep } from '../actions/planActions.js';
+import { getTurnOffCriteria } from '../actions/TurnOffCriteriaActions.js';
 
 class CreateSmokingPlanPage extends React.Component {
     constructor(props){
         super(props);
         this.render = this.render.bind(this);
+    }
+
+    componentWillMount(){
+        console.log("inside of componentWillMount");
+        this.props.getTurnOffCriteria();
     }
 
     buildStepArray(){
@@ -91,18 +97,18 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    // get the nextStep from state
-    // create the Step
     return {
         addStep: () => {
             console.log("add clicked");
             dispatch(addStep());
-            // add the step to state
-            // increment nextStep in state
         },
         deleteStep:(key) => {
             console.log("delete clicked");
             dispatch(deleteStep(key));
+        },
+        getTurnOffCriteria:() => {
+            console.log("getting turn off criteria");
+            dispatch(getTurnOffCriteria());
         }
     }
 }
