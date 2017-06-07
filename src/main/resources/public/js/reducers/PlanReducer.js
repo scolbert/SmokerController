@@ -25,9 +25,9 @@ const planReducer = (state = {
             state = Object.assign({}, state, {selectedPlan: action.payload})
             break;
         case "ADD_STEP":
-            console.log("Inside of Reducer.AddStep");
+            let newKey = state.nextStep;
             let newStep = {
-                key:1,
+                key:newKey,
                 order:1,
                 hours:1,
                 minutes:12,
@@ -36,7 +36,8 @@ const planReducer = (state = {
                 selectedCriteria:3
             };
             let newActivePlanSteps = [...state.activePlanSteps, newStep];
-            state = Object.assign({}, state, {activePlanSteps: newActivePlanSteps});
+            state = Object.assign({}, state, {nextStep:(newKey + 1), activePlanSteps: newActivePlanSteps});
+
             break;
         default:
             state = state;
