@@ -2,6 +2,7 @@ import React from 'react';
 import Selector from '../components/Selector.js';
 import { connect } from 'react-redux';
 import CookingPlanStep from '../components/CookingPlanStep.js';
+import { addStep } from '../actions/planActions.js';
 
 class CreateSmokingPlanPage extends React.Component {
     constructor(props){
@@ -57,7 +58,7 @@ class CreateSmokingPlanPage extends React.Component {
                                 <th style={{width: criteriaColumnWidth + 'em'}}>Turn Off<br />Criteria</th>
                                 <th style={{width: deleteColumnWidth + 'em'}}>Delete</th>
                                 <td style={{width: addColumnWidth + 'em'}}>
-                                    <button>Add</button>
+                                    <button onClick={this.props.addStep}>Add</button>
                                 </td>
                             </tr>
                         </thead>
@@ -79,13 +80,16 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
+    // get the nextStep from state
+    // create the Step
     return {
-        toggleProbe: (e) => {
-            let probeNumber = e.target.value;
-            dispatch( toggleProbe(probeNumber) );
+        addStep: () => {
+            console.log("add clicked");
+            dispatch(addStep());
+            // add the step to state
+            // increment nextStep in state
         }
     }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateSmokingPlanPage);

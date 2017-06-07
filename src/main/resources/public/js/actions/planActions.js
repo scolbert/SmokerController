@@ -27,3 +27,11 @@ export function handlePlanSelection(e) {
         })
     }
 }
+
+export function addStep() {
+    console.log("Inside of planAction.addStep");
+    return ({
+        type: "ADD_STEP",
+        payload: 2
+    })
+}
