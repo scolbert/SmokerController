@@ -29,7 +29,6 @@ export function handlePlanSelection(e) {
 }
 
 export function addStep() {
-    console.log("Inside of planAction.addStep");
     return ({
         type: "ADD_STEP",
         payload: 2
@@ -37,9 +36,15 @@ export function addStep() {
 }
 
 export function deleteStep(key) {
-    console.log("Inside of planAction.deleteStep");
     return ({
         type: "DELETE_STEP",
         payload:key
+    })
+}
+
+export function changeHours(index, text){
+    return ({
+        type: "UPDATE_HOURS",
+        payload:{index: index, newHours: text}
     })
 }

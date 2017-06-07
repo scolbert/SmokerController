@@ -5,7 +5,7 @@ const CookingPlanStep = (props) =>{
     return (
         <tr>
             <td>
-                <input type="textBox" id="hoursBox"/>
+                <input type="textBox" id="hoursBox" onBlur={(e) => props.onHoursChanged(props.index, e)} />
             </td>
             <td>
                 <input type="textBox" id="minutesBox"/>

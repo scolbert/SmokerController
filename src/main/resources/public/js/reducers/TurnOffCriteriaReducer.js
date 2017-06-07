@@ -25,7 +25,6 @@ const TurnOffCriteriaReducer = (state, action ) => {
             newState = Object.assign({}, state, {probes:[], temperature: 0});
             break;
         case "GET_TURN_OFF_CRITERIA":
-            console.log("Inside reducer.GET_TURN_OFF_CRITERIA that list is ", action.payload)
             newState = Object.assign({}, state, {turnOffCriteriaList:action.payload})
             break;
         default:

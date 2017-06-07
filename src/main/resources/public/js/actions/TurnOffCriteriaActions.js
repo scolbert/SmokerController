@@ -50,7 +50,6 @@ export function submit() {
 }
 
 export function getTurnOffCriteria() {
-    console.log("inside of action.getTurnOffCritieria");
     return dispatch => {
         $.ajax({
             headers: {
@@ -60,7 +59,6 @@ export function getTurnOffCriteria() {
             url: 'http://localhost:8080/api/v1/TurnOffCriteria',
             method: 'GET',
             success: (response) => {
-                console.log("inside of success response is", response)
                 dispatch ({
                     type: "GET_TURN_OFF_CRITERIA",
                     payload: response
@@ -70,8 +68,7 @@ export function getTurnOffCriteria() {
                 console.log("error response is ", response);
                 console.log("textStatus is ", textStatus);
                 console.log("error thrown is ", errorThrown);
-            },
-            dataType: 'text'
+            }
         })
     }
 }

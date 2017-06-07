@@ -2,6 +2,7 @@ const planReducer = (state = {
                         plans:[{id:1, name:'Test Smoking Plan 1'}, {id:2, name:'Test Smoking Plan 3'}],
                         selectedPlan: '1',
                         nextStep: 1,
+                        nextOrder: 1,
                         activePlanSteps:[
                             {
                                 key:0,
@@ -22,7 +23,6 @@ const planReducer = (state = {
                      },
                      action) => {
 
-    console.log("action.type is " + action.type);
     switch(action.type) {
         case "GET_PLANS":
             state = Object.assign({}, state, {plans: action.payload})
@@ -32,17 +32,18 @@ const planReducer = (state = {
             break;
         case "ADD_STEP":
             let newKey = state.nextStep;
+            let newOrder = state.nextOrder;
             let newStep = {
                 key:newKey,
-                order:1,
-                hours:1,
-                minutes:12,
-                selectedProbe:4,
-                temperature:300,
-                selectedCriteria:3
+                order:newOrder,
+                hours:0,
+                minutes:0,
+                selectedProbe:1,
+                temperature:0,
+                selectedCriteria:0
             };
             let newActivePlanSteps = [...state.activePlanSteps, newStep];
-            state = Object.assign({}, state, {nextStep:(newKey + 1), activePlanSteps: newActivePlanSteps});
+            state = Object.assign({}, state, {nextStep:(newKey + 1), nextOrder:(newOrder +1), activePlanSteps: newActivePlanSteps});
             break;
         case "DELETE_STEP":
             let key = action.payload;
@@ -51,6 +52,16 @@ const planReducer = (state = {
                 return true;
             })
             state = Object.assign({}, state, {activePlanSteps: alteredArray});
+            break;
+        case "UPDATE_HOURS":
+            let activePlanStepsModifiedHours = state.activePlanSteps.map((item) => {
+                if(item.key === action.payload.index){
+                    return Object.assign({}, item, {hours:action.payload.newHours})
+                } else {
+                    return item;
+                }
+            })
+            state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedHours});
             break;
         default:
             state = state;

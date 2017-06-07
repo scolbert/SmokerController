@@ -2,8 +2,10 @@ import React from 'react';
 import Selector from '../components/Selector.js';
 import { connect } from 'react-redux';
 import CookingPlanStep from '../components/CookingPlanStep.js';
-import { addStep, deleteStep } from '../actions/planActions.js';
+import { addStep, deleteStep, changeHours } from '../actions/planActions.js';
 import { getTurnOffCriteria } from '../actions/TurnOffCriteriaActions.js';
+import { createName } from '../helpers/TurnOffCriteriaNamer';
+import {convertKelvinToFarenheit} from '../helpers/TemperatureConverter.js';
 
 class CreateSmokingPlanPage extends React.Component {
     constructor(props){
@@ -12,8 +14,14 @@ class CreateSmokingPlanPage extends React.Component {
     }
 
     componentWillMount(){
-        console.log("inside of componentWillMount");
         this.props.getTurnOffCriteria();
+    }
+
+    addNameToTurnOffCriteria() {
+        let criteria = this.props.turnOffCriteriaList;
+        return criteria.map((item) => {
+            return Object.assign({}, item, {name:createName(convertKelvinToFarenheit(item.targetTemperature.tempK), item.probeList)});
+        })
     }
 
     buildStepArray(){
@@ -31,9 +39,10 @@ class CreateSmokingPlanPage extends React.Component {
                     order={source[x].order}
                     probeArray={this.props.probeList}
                     onProbeSelected={testFunction}
-                    criteriaList={testArray}
+                    criteriaList={this.addNameToTurnOffCriteria(this.props.turnOffCriteriaList)}
                     onCriteriaSelected={testFunction}
                     onDelete={this.props.deleteStep}
+                    onHoursChanged={this.props.onHoursChanged}
                 />
             )
         }
@@ -92,23 +101,24 @@ class CreateSmokingPlanPage extends React.Component {
 const mapStateToProps = (state) => {
     return {
         planSteps: state.planState.activePlanSteps,
-        probeList: state.planState.probeList
+        probeList: state.planState.probeList,
+        turnOffCriteriaList: state.criteriaState.turnOffCriteriaList
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         addStep: () => {
-            console.log("add clicked");
             dispatch(addStep());
         },
         deleteStep:(key) => {
-            console.log("delete clicked");
             dispatch(deleteStep(key));
         },
         getTurnOffCriteria:() => {
-            console.log("getting turn off criteria");
             dispatch(getTurnOffCriteria());
+        },
+        onHoursChanged: (index, event) => {
+            dispatch(changeHours(index, event.target.value));
         }
     }
 }
