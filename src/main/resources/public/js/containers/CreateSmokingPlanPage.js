@@ -2,7 +2,7 @@ import React from 'react';
 import Selector from '../components/Selector.js';
 import { connect } from 'react-redux';
 import CookingPlanStep from '../components/CookingPlanStep.js';
-import { addStep, deleteStep, changeHours } from '../actions/planActions.js';
+import { addStep, deleteStep, changeHours, changeMinutes, changeTemperature, changeAmbientProbe } from '../actions/planActions.js';
 import { getTurnOffCriteria } from '../actions/TurnOffCriteriaActions.js';
 import { createName } from '../helpers/TurnOffCriteriaNamer';
 import {convertKelvinToFarenheit} from '../helpers/TemperatureConverter.js';
@@ -26,7 +26,7 @@ class CreateSmokingPlanPage extends React.Component {
 
     buildStepArray(){
         let testArray = [{name:"nameOne", id:3}, {name:"namethree", id:5}];
-        let testFunction = (e) => {console.log("testFunction Called")};
+        let testFunction = (e) => {console.log("testFunction Called", e)};
 
         let source = this.props.planSteps;
         let destination = [];
@@ -38,11 +38,13 @@ class CreateSmokingPlanPage extends React.Component {
                     index={source[x].key}
                     order={source[x].order}
                     probeArray={this.props.probeList}
-                    onProbeSelected={testFunction}
+                    onProbeSelected={this.props.onProbeSelected}
                     criteriaList={this.addNameToTurnOffCriteria(this.props.turnOffCriteriaList)}
                     onCriteriaSelected={testFunction}
                     onDelete={this.props.deleteStep}
                     onHoursChanged={this.props.onHoursChanged}
+                    onMinutesChanged={this.props.onMinutesChanged}
+                    onTemperatureChanged={this.props.onTemperatureChanged}
                 />
             )
         }
@@ -119,6 +121,15 @@ const mapDispatchToProps = (dispatch) => {
         },
         onHoursChanged: (index, event) => {
             dispatch(changeHours(index, event.target.value));
+        },
+        onMinutesChanged: (index, event) => {
+            dispatch(changeMinutes(index, event.target.value));
+        },
+        onTemperatureChanged: (index, event) => {
+            dispatch(changeTemperature(index, event.target.value));
+        },
+        onProbeSelected: (index, event) => {
+            dispatch(changeAmbientProbe(index, event.target.value));
         }
     }
 }

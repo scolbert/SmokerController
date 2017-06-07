@@ -8,13 +8,13 @@ const CookingPlanStep = (props) =>{
                 <input type="textBox" id="hoursBox" onBlur={(e) => props.onHoursChanged(props.index, e)} />
             </td>
             <td>
-                <input type="textBox" id="minutesBox"/>
+                <input type="textBox" id="minutesBox" onBlur={(e) => props.onMinutesChanged(props.index, e)}/>
             </td>
             <td>
-                <Selector id="probeSelector" data={props.probeArray} onMessageSelected={props.onProbeSelected}></Selector>
+                <Selector id="probeSelector" data={props.probeArray} onMessageSelected={(e) => props.onProbeSelected(props.index, e)}></Selector>
             </td>
             <td>
-                <input type="textBox" id="temperatureBox"/>
+                <input type="textBox" id="temperatureBox" onBlur={(e) => props.onTemperatureChanged(props.index, e)}/>
             </td>
             <td>
                 <Selector id="criteriaSelector" data={props.criteriaList} onMessageSelected={props.onCriteriaSelected}></Selector>

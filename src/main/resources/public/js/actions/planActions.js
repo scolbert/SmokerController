@@ -48,3 +48,26 @@ export function changeHours(index, text){
         payload:{index: index, newHours: text}
     })
 }
+
+export function changeMinutes(index, text){
+    return ({
+        type: "UPDATE_MINUTES",
+        payload:{index: index, newMinutes: text}
+    })
+}
+
+export function changeTemperature(index, text){
+    return({
+        type: "UPDATE_TEMPERATURE",
+        payload:{index: index, newTemperature: text}
+    })
+}
+
+export function changeAmbientProbe(index, probe){
+    console.log("in action probe is ", probe);
+    return({
+        type: "CHANGE_SELECTED_PROBE",
+        payload:{index: index, newSelectedProbe: probe}
+    })
+}
+

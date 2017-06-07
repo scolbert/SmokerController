@@ -63,6 +63,37 @@ const planReducer = (state = {
             })
             state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedHours});
             break;
+        case "UPDATE_MINUTES":
+            let activePlanStepsModifiedMinutes = state.activePlanSteps.map((item) => {
+                if(item.key === action.payload.index){
+                    return Object.assign({}, item, {minutes:action.payload.newMinutes})
+                } else {
+                    return item;
+                }
+            })
+            state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedMinutes});
+            break;
+        case "UPDATE_TEMPERATURE":
+            let activePlanStepsModifiedTemperature = state.activePlanSteps.map((item) => {
+                if(item.key === action.payload.index){
+                    return Object.assign({}, item, {temperature:action.payload.newTemperature})
+                } else {
+                    return item;
+                }
+            })
+            state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedTemperature});
+            break;
+        case "CHANGE_SELECTED_PROBE":
+            console.log("in reducer Probe returned from action is " + action.payload.newSelectedProbe);
+            let activePlanStepsModifiedSelectedProbe = state.activePlanSteps.map((item) => {
+                if(item.key === action.payload.index){
+                    return Object.assign({}, item, {selectedProbe:action.payload.newSelectedProbe})
+                } else {
+                    return item;
+                }
+            })
+            state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedSelectedProbe});
+            break;
         default:
             state = state;
     }
