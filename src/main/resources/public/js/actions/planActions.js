@@ -124,22 +124,19 @@ function buildPlanJson(){
 }
 
 function buildPlanStepJsonArray(){
-    return (
-        [
-            buildSinglePlanStepJson()
-        ]
-    )
+    const activePlanSteps = store.getState().planState.activePlanSteps;
+    return activePlanSteps.map((item) => buildSinglePlanStepJson(item));
 }
 
-function buildSinglePlanStepJson(){
+function buildSinglePlanStepJson(step){
     return(
         {
             "id": 0,
-            "minutesAtTemp": 10,
-            "order": 0,
+            "minutesAtTemp": parseInt(step.minutes) + parseInt(step.hours * 60),
+            "order": step.order,
             "temperature": {
                 "temp": 0,
-                "tempK": 500
+                "tempK": step.temperature
             },
             "turnOffCriteria": getCriteria(0)
         }
