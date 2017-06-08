@@ -13,7 +13,7 @@ const planReducer = (state = {
                                 minutes:0,
                                 selectedProbe:1,
                                 temperature:0,
-                                selectedCriteria:1
+                                selectedCriteria:0
                             }
                         ],
                         probeList:[

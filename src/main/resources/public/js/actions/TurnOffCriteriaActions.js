@@ -59,6 +59,7 @@ export function getTurnOffCriteria() {
             url: 'http://localhost:8080/api/v1/TurnOffCriteria',
             method: 'GET',
             success: (response) => {
+                console.log("Turn off criteria received from database is", response);
                 dispatch ({
                     type: "GET_TURN_OFF_CRITERIA",
                     payload: response
