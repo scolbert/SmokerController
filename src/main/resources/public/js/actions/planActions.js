@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import store from '../store.js';
+import { convertFarenheitToKelvin } from '../helpers/TemperatureConverter.js';
 
 export function getPlans() {
     return dispatch => {
@@ -129,35 +130,41 @@ function buildPlanStepJsonArray(){
 }
 
 function buildSinglePlanStepJson(step){
+    console.log("Selected Criteira is ", step.selectedCriteria);
+    let turnOffCriteria = getCriteria(step.selectedCriteria);
+    console.log("turnoffcritiera is ", turnOffCriteria);
     return(
         {
             "id": 0,
             "minutesAtTemp": parseInt(step.minutes) + parseInt(step.hours * 60),
             "order": step.order,
+            "temperatureTimingId": step.id,
             "temperature": {
                 "temp": 0,
-                "tempK": step.temperature
+                "tempK": convertFarenheitToKelvin(step.temperature)
             },
-            "turnOffCriteria": getCriteria(0)
+            "turnOffCriteria": turnOffCriteria
         }
     )
 
 }
 
 function getCriteria(id){
-    return (
-        {
-            "id": 0,
-            "probeList": [
-                0
-            ],
-            "probes": "1,2,3",
-            "targetTemperature": {
-                "temp": 0,
-                "tempK": 600
-            }
+    const criteriaList = store.getState().criteriaState.turnOffCriteriaList;
+    console.log("criteriaList is ", criteriaList);
+    const filteredList = criteriaList.filter((item) => {
+        console.log("comparing item.id to id " + item.id + " : " + id);
+        if(item.id == id){
+            console.log("found a match");
+            return true;
+        } else {
+            console.log("does not match");
+            return false;
         }
-    )
+    });
+    console.log("FilteredList is ", filteredList);
+    return filteredList[0];
+
 }
 
 
