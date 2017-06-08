@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import store from '../store.js';
 
 export function getPlans() {
     return dispatch => {
@@ -112,10 +113,12 @@ export function addDescription(description){
 }
 
 function buildPlanJson(){
+    const activePlanName = store.getState().planState.activePlanName;
+    const activePlanDescription = store.getState().planState.activePlanDescription;
     return ({
-        "description": "string",
+        "description": activePlanDescription,
         "id": 0,
-        "name": "a new experiment from code",
+        "name": activePlanName,
         "tempDetails": buildPlanStepJsonArray()
     })
 }
