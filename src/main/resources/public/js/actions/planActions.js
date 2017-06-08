@@ -91,6 +91,7 @@ export function addPlan(){
             method: 'POST',
             data: JSON.stringify(buildPlanJson()),
             success: (response) => {
+                createPlanSteps(response.id)
                 dispatch ({
                     type: "ADD_PLAN",
                     payload: {}
@@ -98,6 +99,50 @@ export function addPlan(){
         });
     }
 }
+
+function createPlanSteps(planId){
+    console.log("id is ", planId);
+    const index = 0;
+    callNextAction(index, planId)
+}
+
+function callNextAction(index, planId){
+    const planStepsArray = store.getState().planState.activePlanSteps;
+    console.log("steps array is", planStepsArray);
+    console.log("inside of callNextAction index is ", index);
+    if(index === planStepsArray.length) {
+        return;
+    }
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        url: 'http://localhost:8080/api/v1/TempTiming/' + planId + '/details',
+        method: 'POST',
+        data: JSON.stringify({
+            "id": 0,
+            "minutesAtTemp": parseInt(planStepsArray[index].minutes) + parseInt(planStepsArray[index].hours * 60),
+            // "order": planStepsArray[index].order, // NOTE THAT INCLUDING AN ORDER BREAKS THINGS ON THE SERVER
+            // IF YOU INCLUDE AN ORDER, A BUG IN THE SYSTEM WILL ONLY ALLOW ONE DETAIL TO BE ADDED USING THE ENDPOINT
+            // ALL OTHERS WILL JUST MYSTERIOUSLY BE NOT ADDED
+            "temperatureTiming": {"id": planId},
+            "temperature": {
+                "temp": 0,
+                "tempK": convertFarenheitToKelvin(planStepsArray[index].temperature)
+            },
+            "turnOffCriteria": {"id": planStepsArray[index].selectedCriteria}
+        }),
+        success: (response) => {
+            console.log("preparing to call next action with index of ", index);
+            console.log("and planId of ", planId);
+            setTimeout(callNextAction(index + 1, planId), 1000)
+        }
+    })
+}
+
+
+// function addStepsToApi(planId)
 
 export function addName(name){
     return({
@@ -119,8 +164,7 @@ function buildPlanJson(){
     return ({
         "description": activePlanDescription,
         "id": 0,
-        "name": activePlanName,
-        "tempDetails": buildPlanStepJsonArray()
+        "name": activePlanName
     })
 }
 
@@ -131,41 +175,26 @@ function buildPlanStepJsonArray(){
 
 function buildSinglePlanStepJson(step){
     console.log("Selected Criteira is ", step.selectedCriteria);
-    let turnOffCriteria = getCriteria(step.selectedCriteria);
-    console.log("turnoffcritiera is ", turnOffCriteria);
+    // let turnOffCriteria = getCriteria(step.selectedCriteria);
+    // console.log("turnoffcritiera is ", turnOffCriteria);
     return(
         {
             "id": 0,
             "minutesAtTemp": parseInt(step.minutes) + parseInt(step.hours * 60),
             "order": step.order,
-            "temperatureTimingId": step.id,
+            "temperatureTiming": {"id": step.id},
             "temperature": {
                 "temp": 0,
                 "tempK": convertFarenheitToKelvin(step.temperature)
             },
-            "turnOffCriteria": turnOffCriteria
+            // "turnOffCriteria": turnOffCriteria
+            "turnOffCriteria": {"id": step.selectedCriteria}
         }
     )
 
 }
 
-function getCriteria(id){
-    const criteriaList = store.getState().criteriaState.turnOffCriteriaList;
-    console.log("criteriaList is ", criteriaList);
-    const filteredList = criteriaList.filter((item) => {
-        console.log("comparing item.id to id " + item.id + " : " + id);
-        if(item.id == id){
-            console.log("found a match");
-            return true;
-        } else {
-            console.log("does not match");
-            return false;
-        }
-    });
-    console.log("FilteredList is ", filteredList);
-    return filteredList[0];
 
-}
 
 
 

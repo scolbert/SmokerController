@@ -62,7 +62,10 @@ public class TemperatureTimingController {
 	@RequestMapping(value = "{id}/details", method = RequestMethod.POST)
 	public List<TemperatureTimingDetail> addDetail(@PathVariable Long id,
 			@RequestBody TemperatureTimingDetail newDetail) {
+		System.out.println("######## inside of addDetail method");
 		TemperatureTiming timing = timingRepo.findOne(id);
+		System.out.println("######## id is " + id);
+		System.out.println("timing is " + timing);
 		List<TemperatureTimingDetail> details = timing.getTempDetails();
 		// if no order is specified, just add it to the end or if there isnt any other details
 		if (newDetail.getOrder() == null || details.isEmpty()) {
