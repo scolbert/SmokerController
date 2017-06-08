@@ -86,7 +86,8 @@ export function addPlan(){
                 'Content-Type': 'application/json'
             },
             url: 'http://localhost:8080/api/v1/TempTiming',
-            data: createJsonForNewSession(),
+            method: 'POST',
+            data: JSON.stringify(buildPlanJson()),
             success: (response) => {
                 dispatch ({
                     type: "ADD_PLAN",
@@ -110,8 +111,53 @@ export function addDescription(description){
 })
 }
 
-function createJsonForNewSession(){
-    return {}; // to be implemented
+function buildPlanJson(){
+    return ({
+        "description": "string",
+        "id": 0,
+        "name": "a new experiment from code",
+        "tempDetails": buildPlanStepJsonArray()
+    })
+}
+
+function buildPlanStepJsonArray(){
+    return (
+        [
+            buildSinglePlanStepJson()
+        ]
+    )
+}
+
+function buildSinglePlanStepJson(){
+    return(
+        {
+            "id": 0,
+            "minutesAtTemp": 10,
+            "order": 0,
+            "temperature": {
+                "temp": 0,
+                "tempK": 500
+            },
+            "turnOffCriteria": getCriteria(0)
+        }
+    )
+
+}
+
+function getCriteria(id){
+    return (
+        {
+            "id": 0,
+            "probeList": [
+                0
+            ],
+            "probes": "1,2,3",
+            "targetTemperature": {
+                "temp": 0,
+                "tempK": 600
+            }
+        }
+    )
 }
 
 
