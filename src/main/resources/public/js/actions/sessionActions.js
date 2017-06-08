@@ -4,8 +4,16 @@ import store from '../store.js';
 export function startSession() {
     return dispatch => {
         const selectedPlan = store.getState().planState.selectedPlan;
-        const selectedPlanDetails = store.getState().planState.plans[convertSelectIndexToArrayIndex(selectedPlan)];
-
+        console.log("selected plan is ", selectedPlan);
+        // search plans for the one with id of selected plan
+        const plans = store.getState().planState.plans;
+        const selectedPlanDetails = plans.filter((plan) => {
+            if(plan.id === parseInt(selectedPlan)){
+                return true;
+            }
+            return false;
+        });
+        console.log("selectedPlanDetails is ", selectedPlanDetails);
         $.ajax({
             headers: {
                 'Accept': 'application/json',
