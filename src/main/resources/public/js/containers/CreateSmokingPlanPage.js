@@ -2,7 +2,7 @@ import React from 'react';
 import Selector from '../components/Selector.js';
 import { connect } from 'react-redux';
 import CookingPlanStep from '../components/CookingPlanStep.js';
-import { addStep, deleteStep, changeHours, changeMinutes, changeTemperature, changeAmbientProbe, changeSelectedCriteria } from '../actions/planActions.js';
+import { addStep, deleteStep, changeHours, changeMinutes, changeTemperature, changeAmbientProbe, changeSelectedCriteria, addPlan, addName, addDescription } from '../actions/planActions.js';
 import { getTurnOffCriteria } from '../actions/TurnOffCriteriaActions.js';
 import { createName } from '../helpers/TurnOffCriteriaNamer';
 import {convertKelvinToFarenheit} from '../helpers/TemperatureConverter.js';
@@ -70,9 +70,9 @@ class CreateSmokingPlanPage extends React.Component {
                 <h1>Create Smoking Plan Page</h1>
 
                 <label>Name </label>
-                <input type="textbox"></input><br />
+                <input type="textbox" onBlur={this.props.addName}></input><br />
                 <label>Description </label>
-                <input type="textBox"></input><br /><br />
+                <input type="textBox" onBlur={this.props.addDescription}></input><br /><br />
 
                 <div style={{border: '1px solid black'}}>
                     <table>
@@ -94,7 +94,7 @@ class CreateSmokingPlanPage extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <button>Submit</button>
+                <button onClick={this.props.addPlan}>Submit</button>
             </div>
         )
     }
@@ -133,6 +133,15 @@ const mapDispatchToProps = (dispatch) => {
         },
         onCriteriaSelected: (index, event) => {
             dispatch(changeSelectedCriteria(index, event.target.value));
+        },
+        addPlan: () => {
+            dispatch(addPlan());
+        },
+        addName: (e) => {
+            dispatch(addName(e.target.value));
+        },
+        addDescription: (e) => {
+            dispatch(addDescription(e.target.value));
         }
     }
 }

@@ -78,3 +78,41 @@ export function changeSelectedCriteria(index, criteria){
     })
 }
 
+export function addPlan(){
+    return dispatch => {
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: 'http://localhost:8080/api/v1/TempTiming',
+            data: createJsonForNewSession(),
+            success: (response) => {
+                dispatch ({
+                    type: "ADD_PLAN",
+                    payload: {}
+                })}
+        });
+    }
+}
+
+export function addName(name){
+    return({
+        type: "ADD_NAME",
+        payload:name
+    })
+}
+
+export function addDescription(description){
+    return({
+        type: "ADD_DESCRIPTION",
+        payload:description
+})
+}
+
+function createJsonForNewSession(){
+    return {}; // to be implemented
+}
+
+
+

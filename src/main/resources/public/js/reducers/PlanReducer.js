@@ -3,6 +3,8 @@ const planReducer = (state = {
                         selectedPlan: '1',
                         nextStep: 1,
                         nextOrder: 1,
+                        activePlanName:"",
+                        activePlanDescription:"",
                         activePlanSteps:[
                             {
                                 key:0,
@@ -103,6 +105,12 @@ const planReducer = (state = {
                 }
             })
             state = Object.assign({}, state, {activePlanSteps: activePlanStepsModifiedSelectedCriteria});
+            break;
+        case "ADD_NAME":
+            state = Object.assign({}, state, {activePlanName: action.payload});
+            break;
+        case "ADD_DESCRIPTION":
+            state = Object.assign({}, state, {activePlanDescription: action.payload});
             break;
         default:
             state = state;
